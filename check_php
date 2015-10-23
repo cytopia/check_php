@@ -96,7 +96,7 @@ fi
 ############################################################
 
 PHP="$(which php)"
-STARTUP_ERROR="$($PHP -v 2>&1 >/dev/null)"
+STARTUP_ERROR="$($PHP -v 3>&1 1>&2 2>&3 1>/dev/null)"
 PHP_VERSION="$(php -v 2>/dev/null| grep -E '(^PHP)|(^Zend)' | awk -F'[,]' '{print $1}' | awk -F'[(]' '{print $1}' | awk -F'[-]' '{print $1}')"
 
 
