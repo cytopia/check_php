@@ -5,5 +5,5 @@
 [![POSIX](https://img.shields.io/badge/posix-100%25-brightgreen.svg)](https://en.wikipedia.org/?title=POSIX)
 [![Type](https://img.shields.io/badge/type-%2Fbin%2Fsh-red.svg)](https://en.wikipedia.org/?title=Bourne_shell)
 
-Check_phpe is a POSIX compliant nagios plugin that will check for PHP startup errors.
+Check_php is a POSIX compliant nagios plugin that will check for PHP startup errors.
 
