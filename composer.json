@@ -1,0 +1,15 @@
+{
+	"name": "cytopia/check_php",
+	"description": "Nagios plugin to check for php startup errors.",
+	"type": "library",
+	"keywords": ["nagios", "nagios-plugin", "icinga", "php", "php-error"],
+	"homepage": "https://github.com/cytopia/check_php",
+	"license": "MIT",
+	"authors": [
+		{
+			"name" : "Patrick Plocke",
+			"homepage": "https://github.com/cytopia",
+			"role": "Developer"
+		}
+	]
+}
