@@ -1,0 +1,115 @@
+#!/bin/sh
+
+# TODO:
+# * check if php.ini is present
+# * can specify must have configuration that must be met
+# * specify to check against sec vulnerabilities
+
+
+################################################################################
+#
+#   V A R I A B L E S
+#
+################################################################################
+
+# Check for performance data:
+# http://nagios.sourceforge.net/docs/3_0/pluginapi.html
+# Nagios error codes
+EXIT_OK=0
+#EXIT_WARN=1
+EXIT_ERR=2
+EXIT_UNKNOWN=3
+
+
+
+
+################################################################################
+#
+#   F U N C T I O N S
+#
+################################################################################
+print_usage() {
+	printf "Usage: check_php [-h] [-v]\n\n"
+	printf "Nagios plugin for displaying PHP startup errors.\n"
+	printf "Use without arguments to display the PHP state.\n\n"
+	printf "  -h    Display help\n"
+	printf "  -v    Display version\n"
+}
+
+print_version() {
+	printf "check_php 0.1\n"
+}
+
+
+################################################################################
+#
+#   E N T R Y   P O I N T
+#
+################################################################################
+
+
+############################################################
+# Parameter
+############################################################
+
+# Make sure the correct number of command line
+# arguments have been supplied
+if [ $# -gt 1 ]; then
+	print_usage
+	exit $EXIT_UNKNOWN
+fi
+
+while test -n "$1"; do
+	case "$1" in
+		-h)
+			print_usage
+			exit $EXIT_OK
+			;;
+		-v)
+			print_version
+			exit $EXIT_OK
+			;;
+		*)
+			printf "Unknown argument: %s\n" "$1"
+			print_usage
+			exit $EXIT_UNKNOWN
+	esac
+	shift
+done
+
+
+
+############################################################
+# Sanity Check
+############################################################
+
+
+if ! command -v php > /dev/null 2>&1 ; then
+	printf "[UNKNOWN] PHP not found.\n"
+	exit $EXIT_UNKNOWN
+fi
+
+
+
+############################################################
+# Get information and Check PHP
+############################################################
+
+PHP="$(which php)"
+STARTUP_ERROR="$($PHP -v 2>&1 >/dev/null)"
+PHP_VERSION="$(php -v 2>/dev/null| grep -E '(^PHP)|(^Zend)' | awk -F'[,]' '{print $1}' | awk -F'[(]' '{print $1}' | awk -F'[-]' '{print $1}')"
+
+
+
+############################################################
+# Return results to nagios
+############################################################
+
+if [ "$STARTUP_ERROR" != "" ]; then
+	printf "[ERR] %s\n%s\n" "$STARTUP_ERROR" "$PHP_VERSION"
+	exit $EXIT_ERR
+else
+	printf "[OK] No PHP startup errors\n%s\n" "$PHP_VERSION"
+	exit $EXIT_OK
+fi
+
