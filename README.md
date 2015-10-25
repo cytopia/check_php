@@ -60,3 +60,13 @@ check_php -s w
 [WARN] PHP Warnings detected. | OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;
 [WARN] PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/local/Cellar/php56/5.6.14/lib/php/extensions/no-debug-non-zts-20131226/test' - dlopen(/usr/local/Cellar/php56/5.6.14/lib/php/extensions/no-debug-non-zts-20131226/test, 9): image not found in Unknown on line 0
 ```
+
+Combine multiple module checks
+
+```shell
+check_php -m mysql -m mysqli -m mbstring
+[OK] No PHP Errors detected. | 'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
+[OK]   Module: "mysql" available
+[OK]   Module: "mysqli" available
+[OK]   Module: "mbstring" available
+```
