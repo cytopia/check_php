@@ -43,7 +43,7 @@ PHP="$(which php)"
 print_usage() {
 	printf "Usage: check_php [-s <w|e>] [-m <module>] [-c <conf> <val>] [-v]\n"
 	printf "       check_php -h\n"
-	printf "       check_php -v\n\n"
+	printf "       check_php -V\n\n"
 	printf "Nagios plugin that will check for PHP startup errors,\n"
 	printf "missing modules and misconfigured directives.\n\n"
 	printf "  -s <w|e>           Check for PHP startup errors and display\n"
