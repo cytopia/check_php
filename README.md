@@ -13,7 +13,7 @@ Check_php is a POSIX compliant nagios plugin that will check for PHP startup err
 ```shell
 Usage: check_php [-s <w|e>] [-m <module>] [-c <conf> <val>] [-v]
        check_php -h
-       check_php -v
+       check_php -V
 
 Nagios plugin that will check for PHP startup errors,
 missing modules and misconfigured directives.
