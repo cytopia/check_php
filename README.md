@@ -18,11 +18,11 @@ Usage: check_php [-s <w|e>] [-m <module>] [-c <conf> <val>] [-v]
 Nagios plugin that will check for PHP startup errors,
 missing modules and misconfigured directives.
 
-  -s <w|e>           Check for PHP startup errors and display
+  -s <w|e>           (Default) Check for PHP startup errors and display
                      nagios warning or error if any exists.
                      Warning:  -s w
                      Error:    -s e
-                     (Default: -s e)
+                     (Default: -s w)
 
   -m <module>        Require compiled PHP module and display
                      nagios error if the module was not compiled against PHP.

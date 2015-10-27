@@ -2,7 +2,6 @@
 
 # TODO:
 # * check if php.ini is present
-# * can specify must have configuration that must be met
 # * specify to check against sec vulnerabilities
 
 
@@ -11,6 +10,13 @@
 #   V A R I A B L E S
 #
 ################################################################################
+INFO_AUTHOR="Patrick Plocke <patrick@plocke.de>"
+INFO_GPGKEY="0x28BF179F"
+INFO_LICENSE="MIT"
+INFO_NAME="check_php"
+INFO_DATE="2015-10-26"
+INFO_VERSION="0.2"
+
 
 # Check for performance data:
 # http://nagios.sourceforge.net/docs/3_0/pluginapi.html
@@ -41,16 +47,16 @@ PHP="$(which php)"
 ############################################################
 
 print_usage() {
-	printf "Usage: check_php [-s <w|e>] [-m <module>] [-c <conf> <val>] [-v]\n"
-	printf "       check_php -h\n"
-	printf "       check_php -v\n\n"
+	printf "Usage: ${INFO_NAME} [-s <w|e>] [-m <module>] [-c <conf> <val>] [-u] [-v]\n"
+	printf "       ${INFO_NAME} -h\n"
+	printf "       ${INFO_NAME} -v\n\n"
 	printf "Nagios plugin that will check for PHP startup errors,\n"
 	printf "missing modules and misconfigured directives.\n\n"
-	printf "  -s <w|e>           Check for PHP startup errors and display\n"
+	printf "  -s <w|e>           (Default) Check for PHP startup errors and display\n"
 	printf "                     nagios warning or error if any exists.\n"
 	printf "                     Warning:  -s w\n"
 	printf "                     Error:    -s e\n"
-	printf "                     (Default: -s e)\n\n"
+	printf "                     (Default: -s w)\n\n"
 	printf "  -m <module>        Require compiled PHP module and display\n"
 	printf "                     nagios error if the module was not compiled against PHP.\n"
 	printf "                     Use multiple times to check against multiple modules.\n"
@@ -59,13 +65,16 @@ print_usage() {
 	printf "                     nagios error if the configuration does not match.\n"
 	printf "                     Use multiple times to check against multiple configurations.\n"
 	printf "                     Example: -c \"date.timezone\" \"Europe/Berlin\"\n\n"
+	printf "  -u                 Check for updated PHP version online. (requires wget)\n\n"
 	printf "  -v                 Be verbose (Show PHP Version and Zend Engine Version)\n\n"
 	printf "  -h                 Display help\n\n"
 	printf "  -V                 Display version\n"
 }
 
 print_version() {
-	printf "check_php 0.1\n"
+	printf "Version: %s %s (%s)\n" "${INFO_NAME}" "${INFO_VERSION}" "${INFO_DATE}"
+	printf "Author:  %s (%s)\n" "${INFO_AUTHOR}" "${INFO_GPGKEY}"
+	printf "License: %s\n" "${INFO_LICENSE}"
 }
 
 
@@ -102,6 +111,53 @@ merge_exit_codes() {
 	return $CURR_EXIT
 }
 
+check_version() {
+	# TODO: Check that curl is installed
+
+	# Current installed version
+	CMD="$PHP -v 2>/dev/null | grep -oE '^PHP\s[0-9]+\.[0-9]+\.[0-9]+' | awk '{ print \$2}'"
+	PHP_VERSION="$(eval "$CMD")"
+
+	PHP_MAJOR="$(echo "$PHP_VERSION" | awk -F'[.]' '{print $1}')"
+	PHP_MINOR="$(echo "$PHP_VERSION" | awk -F'[.]' '{print $2}')"
+	PHP_PATCH="$(echo "$PHP_VERSION" | awk -F'[.]' '{print $3}')"
+
+	# Latest available versions
+	PHP_LATEST="$(wget -qO- "https://secure.php.net/releases/index.php?json&version=5&max=3" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+
+	for v in $PHP_LATEST; do
+
+		PHP_LATEST_MAJOR="$(echo "$v" | awk -F'[.]' '{print $1}')"
+		PHP_LATEST_MINOR="$(echo "$v" | awk -F'[.]' '{print $2}')"
+		PHP_LATEST_PATCH="$(echo "$v" | awk -F'[.]' '{print $3}')"
+
+		# Get Major version
+		if [ "$PHP_LATEST_MAJOR" = "$PHP_MAJOR" ]; then
+			# Get Minor version
+			if [ "$PHP_LATEST_MINOR" = "$PHP_MINOR" ]; then
+				# Get Patch version
+				if [ "$PHP_LATEST_PATCH" -gt "$PHP_PATCH" ]; then
+					echo "[ERR]  PHP Version $PHP_VERSION too old. Latest: ${PHP_LATEST_MAJOR}.${PHP_LATEST_MINOR}.${PHP_LATEST_PATCH}."
+					return 2
+				elif [ "$PHP_LATEST_PATCH" -eq "$PHP_PATCH" ]; then
+					echo "[OK]   PHP Version $PHP_VERSION up to date."
+					return 0
+				else
+					echo "[??]   PHP Version $PHP_VERSION too new. Latest: ${PHP_LATEST_MAJOR}.${PHP_LATEST_MINOR}.${PHP_LATEST_PATCH}."
+					return 3
+				fi
+			fi
+		fi
+	done
+
+	echo "[??]   No PHP Version found online. Your version: $PHP_VERSION"
+	return 3
+
+}
+
+
+# Make sure not to display any errors to stdout
+# and store them in a variable to output it in a formated way.
 check_startup_errors() {
 	CMD="$PHP -v 3>&1 1>&2 2>&3 1>/dev/null"
 	ERR="$(eval "$CMD")"
@@ -161,6 +217,7 @@ check_module() {
 ############################################################
 
 
+
 if [ "$1" = "-h" ]; then
 	print_usage
 	exit $EXIT_OK
@@ -172,10 +229,12 @@ fi
 
 # Extended Status Message
 MSG_STARTUP=""
+MSG_UPDATE=""
 MSG_MODULE=""
 MSG_CONFIG=""
 MSG_VERBOSE=""
 
+HAS_STARTUP_ERROR=""
 
 # Final exit code
 NAGIOS_EXIT="$EXIT_OK"
@@ -200,17 +259,18 @@ while test -n "$1"; do
 
 
 			if [ "$TMP_EXIT" != "0" ]; then
-				if [ "$SEVERITY" = "w" ]; then
-					MSG_STARTUP="[WARN] ${MSG_STARTUP}"
-					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
-				else
+				if [ "$SEVERITY" = "e" ]; then
 					MSG_STARTUP="[ERR]  ${MSG_STARTUP}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
+				else
+					MSG_STARTUP="[WARN] ${MSG_STARTUP}"
+					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
 			else
 				MSG_STARTUP="[OK]   ${MSG_STARTUP}"
 				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
 			fi
+			HAS_STARTUP_ERROR="true"
 			;;
 
 		# Evaluate missing modules
@@ -243,6 +303,13 @@ while test -n "$1"; do
 			NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "$TMP_EXIT")"
 			;;
 
+		# Evaluate php update version
+		-u)
+			MSG_UPDATE="$(check_version)"
+			TMP_EXIT="$?"
+			NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "$TMP_EXIT")"
+			;;
+
 		# Be versbose
 		-v)
 			CMD="$PHP -v 2>/dev/null | grep -E '(^PHP)|(^Zend)' | awk -F'[,]' '{print \$1}' | awk -F'[(]' '{print \$1}' | awk -F'[-]' '{print \$1}'"
@@ -262,6 +329,19 @@ while test -n "$1"; do
 	shift
 done
 
+
+# Add startup errors by default, if it wasn't set
+if [ "$HAS_STARTUP_ERROR" = "" ]; then
+	MSG_STARTUP="$(check_startup_errors)"
+	TMP_EXIT="$?"
+	if [ "$TMP_EXIT" != "0" ]; then
+		MSG_STARTUP="[WARN] ${MSG_STARTUP}"
+		NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
+	else
+		MSG_STARTUP="[OK]   ${MSG_STARTUP}"
+		NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
+	fi
+fi
 
 
 
@@ -283,6 +363,7 @@ else
 fi
 
 if [ "$MSG_STARTUP" != "" ]; then echo "$MSG_STARTUP"; fi
+if [ "$MSG_UPDATE"  != "" ]; then echo "$MSG_UPDATE";  fi
 if [ "$MSG_MODULE"  != "" ]; then echo "$MSG_MODULE";  fi
 if [ "$MSG_CONFIG"  != "" ]; then echo "$MSG_CONFIG";  fi
 if [ "$MSG_VERBOSE" != "" ]; then echo "$MSG_VERBOSE"; fi
