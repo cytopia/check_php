@@ -14,7 +14,7 @@ INFO_AUTHOR="Patrick Plocke <patrick@plocke.de>"
 INFO_GPGKEY="0x28BF179F"
 INFO_LICENSE="MIT"
 INFO_NAME="check_php"
-INFO_DATE="2015-10-26"
+INFO_DATE="2015-10-28"
 INFO_VERSION="0.2"
 
 
