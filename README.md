@@ -84,7 +84,7 @@ $ check_php -u
 Checking for PHP Updates (Updates available)
 ```shell
 $ check_php -u
-[ERR] PHP Errors detected. | OK'=0;;;; 'Errors'=1;;;; 'Warnings'=-;;;; 'Unknown'=0;;;;
+[ERR] PHP Errors detected. | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=-;;;; 'Unknown'=0;;;;
 [OK]   No PHP startup errors
 [ERR]  PHP Version 5.6.13 too old. Latest: 5.6.14.
 ```
@@ -92,7 +92,7 @@ $ check_php -u
 Checking for PHP Updates (Able to differentiate between PHP 5.4, 5.5 and 5.6)
 ```shell
 $ check_php -u
-[ERR] PHP Errors detected. | OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
+[ERR] PHP Errors detected. | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [OK]   No PHP startup errors
 [ERR]  PHP Version 5.5.1 too old. Latest: 5.5.30.
 ```
@@ -100,7 +100,7 @@ $ check_php -u
 A lot of options combined
 ```shell
 $ check_php -s w -m mysql -m mbstring -m xml -c date.timezone 'Europe/Berlin' -c session.cookie_secure "On" -u -v
-[ERR] PHP Errors detected. | OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
+[ERR] PHP Errors detected. | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [OK]   No PHP startup errors
 [OK]   PHP Version 5.6.14 up to date.
 [OK]   Module: "mysql" available
