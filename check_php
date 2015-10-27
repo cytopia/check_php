@@ -359,9 +359,9 @@ fi
 if [ "$NAGIOS_EXIT" = "$EXIT_OK" ]; then
 	printf "%s | %s\n" "[OK] No PHP Errors detected." "'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
 elif [ "$NAGIOS_EXIT" = "$EXIT_WARN" ]; then
-	printf "%s | %s\n" "[WARN] PHP Warnings detected." "OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;"
+	printf "%s | %s\n" "[WARN] PHP Warnings detected." "'OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;"
 elif [ "$NAGIOS_EXIT" = "$EXIT_ERR" ]; then
-	printf "%s | %s\n" "[ERR] PHP Errors detected." "OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
+	printf "%s | %s\n" "[ERR] PHP Errors detected." "'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
 else
 	printf "%s | %s\n" "[UNKNOWN] PHP is at unknown state - check extended info." "OK'=0;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=1;;;;"
 fi
