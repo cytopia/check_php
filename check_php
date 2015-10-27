@@ -298,7 +298,11 @@ while test -n "$1"; do
 			shift
 			VALUE="$1"
 
-			MSG_CONFIG="$(check_configurration "$CONFIG" "$VALUE")"
+			if [ "$MSG_CONFIG" = "" ]; then
+				MSG_CONFIG="$(check_configurration "$CONFIG" "$VALUE")"
+			else
+				MSG_CONFIG="${MSG_CONFIG}\n$(check_configurration "$CONFIG" "$VALUE")"
+			fi
 			TMP_EXIT="$?"
 			NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "$TMP_EXIT")"
 			;;
@@ -357,7 +361,7 @@ if [ "$NAGIOS_EXIT" = "$EXIT_OK" ]; then
 elif [ "$NAGIOS_EXIT" = "$EXIT_WARN" ]; then
 	printf "%s | %s\n" "[WARN] PHP Warnings detected." "OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;"
 elif [ "$NAGIOS_EXIT" = "$EXIT_ERR" ]; then
-	printf "%s | %s\n" "[ERR] PHP Errors detected." "OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;"
+	printf "%s | %s\n" "[ERR] PHP Errors detected." "OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
 else
 	printf "%s | %s\n" "[UNKNOWN] PHP is at unknown state - check extended info." "OK'=0;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=1;;;;"
 fi
