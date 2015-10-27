@@ -13,7 +13,7 @@ Check_php is a POSIX compliant nagios plugin that will check for PHP startup err
 ```shell
 Usage: check_php [-s <w|e>] [-m <module>] [-c <conf> <val>] [-v]
        check_php -h
-       check_php -v
+       check_php -V
 
 Nagios plugin that will check for PHP startup errors,
 missing modules and misconfigured directives.
@@ -47,7 +47,7 @@ missing modules and misconfigured directives.
 Checking against prefered timezone and compiled module `mysql`
 
 ```shell
-check_php -c "date.timezone" "Europe/Berlin" -m mysql
+$ check_php -c "date.timezone" "Europe/Berlin" -m mysql
 [ERR] PHP Errors detected. | OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;
 [ERR]  Module: "mysql" not available
 [OK]   Config "date.timezone" = "Europe/Berlin"
@@ -56,7 +56,7 @@ check_php -c "date.timezone" "Europe/Berlin" -m mysql
 Checking for PHP startup errors
 
 ```shell
-check_php -s w
+$ check_php -s w
 [WARN] PHP Warnings detected. | OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;
 [WARN] PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/local/Cellar/php56/5.6.14/lib/php/extensions/no-debug-non-zts-20131226/test' - dlopen(/usr/local/Cellar/php56/5.6.14/lib/php/extensions/no-debug-non-zts-20131226/test, 9): image not found in Unknown on line 0
 ```
@@ -64,7 +64,7 @@ check_php -s w
 Combine multiple module checks
 
 ```shell
-check_php -m mysql -m mysqli -m mbstring
+$ check_php -m mysql -m mysqli -m mbstring
 [OK] No PHP Errors detected. | 'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [OK]   Module: "mysql" available
 [OK]   Module: "mysqli" available

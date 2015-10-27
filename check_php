@@ -47,9 +47,9 @@ PHP="$(which php)"
 ############################################################
 
 print_usage() {
-	printf "Usage: ${INFO_NAME} [-s <w|e>] [-m <module>] [-c <conf> <val>] [-u] [-v]\n"
-	printf "       ${INFO_NAME} -h\n"
-	printf "       ${INFO_NAME} -v\n\n"
+	printf "Usage: %s [-s <w|e>] [-m <module>] [-c <conf> <val>] [-u] [-v]\n" "${INFO_NAME}"
+	printf "       %s -h\n" "${INFO_NAME}"
+	printf "       %s -V\n\n" "${INFO_NAME}"
 	printf "Nagios plugin that will check for PHP startup errors,\n"
 	printf "missing modules and misconfigured directives.\n\n"
 	printf "  -s <w|e>           (Default) Check for PHP startup errors and display\n"
