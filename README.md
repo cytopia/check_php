@@ -82,7 +82,7 @@ $ check_php -u
 ```
 
 Checking for PHP Updates (Updates available)
-```
+```shell
 $ check_php -u
 [ERR] PHP Errors detected. | OK'=0;;;; 'Errors'=1;;;; 'Warnings'=-;;;; 'Unknown'=0;;;;
 [OK]   No PHP startup errors
@@ -90,7 +90,7 @@ $ check_php -u
 ```
 
 Checking for PHP Updates (Able to differentiate between PHP 5.4, 5.5 and 5.6)
-```
+```shell
 $ check_php -u
 [ERR] PHP Errors detected. | OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [OK]   No PHP startup errors
@@ -98,7 +98,7 @@ $ check_php -u
 ```
 
 A lot of options combined
-```
+```shell
 $ check_php -s w -m mysql -m mbstring -m xml -c date.timezone 'Europe/Berlin' -c session.cookie_secure "On" -u -v
 [ERR] PHP Errors detected. | OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [OK]   No PHP startup errors
