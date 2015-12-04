@@ -1,6 +1,7 @@
 Version 0.3 (unreleased)
 -----------
 
+- [Enh]		Always display current PHP version in nagios output
 - [Enh]		Choose severity level for all checks (error or warning)
 - [Enh]		Remote checks now also check for wget, curl or fetch and only require one of them
 

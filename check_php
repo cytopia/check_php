@@ -131,10 +131,18 @@ merge_exit_codes() {
 	return $CURR_EXIT
 }
 
-check_version() {
+get_php_version() {
+
 	# Current installed version
 	CMD="$PHP -v 2>/dev/null | grep -oE '^PHP\s[0-9]+\.[0-9]+\.[0-9]+' | awk '{ print \$2}'"
 	PHP_VERSION="$(eval "$CMD")"
+
+	echo "$PHP_VERSION"
+}
+
+check_version() {
+	# Current installed version
+	PHP_VERSION="$(get_php_version)"
 
 	PHP_MAJOR="$(echo "$PHP_VERSION" | awk -F'[.]' '{print $1}')"
 	PHP_MINOR="$(echo "$PHP_VERSION" | awk -F'[.]' '{print $2}')"
@@ -444,6 +452,7 @@ done
 # Get information and Check PHP
 ############################################################
 
+PHPV="$(get_php_version)"
 INFO=""
 if [ "$HAS_STARTUP_ERROR" != "" ]; then
 	INFO="$(merge_text "${INFO}" "Startup error(s)" ", ")"
@@ -462,13 +471,13 @@ fi
 #### Performance Data
 
 if [ "$NAGIOS_EXIT" = "$EXIT_OK" ]; then
-	printf "%s | %s\n" "[OK] No PHP Errors detected" "'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
+	printf "%s | %s\n" "[OK] PHP ${PHPV} is healthy" "'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
 elif [ "$NAGIOS_EXIT" = "$EXIT_WARN" ]; then
-	printf "%s: %s | %s\n" "[WARN] PHP Warnings detected" "${INFO}" "'OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;"
+	printf "%s: %s | %s\n" "[WARN] PHP ${PHPV} has warnings" "${INFO}" "'OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;"
 elif [ "$NAGIOS_EXIT" = "$EXIT_ERR" ]; then
-	printf "%s: %s | %s\n" "[ERROR] PHP Errors detected" "${INFO}" "'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
+	printf "%s: %s | %s\n" "[ERROR] PHP ${PHPV} has errors" "${INFO}" "'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
 else
-	printf "%s: %s | %s\n" "[UNKNOWN] PHP is at unknown state - check extended info." "${INFO}" "OK'=0;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=1;;;;"
+	printf "%s: %s | %s\n" "[UNKNOWN] PHP ${PHPV} is at unknown state - check extended info." "${INFO}" "OK'=0;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=1;;;;"
 fi
 
 if [ "$MSG_STARTUP" != "" ]; then echo "$MSG_STARTUP"; fi
