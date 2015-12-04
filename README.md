@@ -11,36 +11,37 @@ Check_php is a POSIX compliant nagios plugin that will check for PHP startup err
 ## Usage
 
 ```shell
-Usage: check_php [-s <w|e>] [-m <module>] [-c <conf> <val>] [-u] [-v]
+Usage: check_php [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-c <conf> <val> <w|e>] [-v]
        check_php -h
        check_php -V
 
-Nagios plugin that will check for PHP startup errors,
-missing modules and misconfigured directives.
+Nagios plugin that will check if PHP exists, for PHP startup errors,
+missing modules, misconfigured directives and available updates.
 
-  -s <w|e>           (Default) Check for PHP startup errors and display
-                     nagios warning or error if any exists.
-                     Warning:  -s w
-                     Error:    -s e
-                     (Default: -s w)
+  -s <w|e>               [single] Check for PHP startup errors and display
+                         nagios warning or error if any exists.
+                         Warning:  -s w
+                         Error:    -s e
 
-  -m <module>        Require compiled PHP module and display
-                     nagios error if the module was not compiled against PHP.
-                     Use multiple times to check against multiple modules.
-                     Example: -m "mysql" -m "mysqli"
+  -u <w|e>               [single] Check for updated PHP version online. (requires wget, curl or fetch)
+                         Will only check for patch updates and will not notify if your current version
+                         PHP 5.5 and there is already PHP 5.6 out there.
 
-  -c <conf> <val>    Check for misconfigured directives in php.ini and display
-                     nagios error if the configuration does not match.
-                     Use multiple times to check against multiple configurations.
-                     Example: -c "date.timezone" "Europe/Berlin"
+  -m <module> <w|e>      [multiple] Require compiled PHP module and display
+                         nagios warning/error if the module was not compiled against PHP.
+                         Use multiple times to check against multiple modules.
+                         Example: -m "mysql" w -m "mysqli" e
 
-  -u                 Check for updated PHP version online. (requires wget)
+  -c <conf> <val> <w|e>  [multiple] Check for misconfigured directives in php.ini and display
+                         nagios warning/error if the configuration does not match.
+                         Use multiple times to check against multiple configurations.
+                         Example: -c "date.timezone" w -c "Europe/Berlin" e
 
-  -v                 Be verbose (Show PHP Version and Zend Engine Version)
+  -v                     Be verbose (Show PHP Version and Zend Engine Version)
 
-  -h                 Display help
+  -h                     Display help
 
-  -V                 Display version
+  -V                     Display version
 ```
 
 
@@ -49,8 +50,8 @@ missing modules and misconfigured directives.
 Checking against prefered timezone and compiled module `mysql`
 
 ```shell
-$ check_php -c "date.timezone" "Europe/Berlin" -m mysql
-[ERR] PHP Errors detected. | OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;
+$ check_php -c "date.timezone" "Europe/Berlin" -m mysql e
+[ERR] PHP Errors detected. | OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [ERR]  Module: "mysql" not available
 [OK]   Config "date.timezone" = "Europe/Berlin"
 ```
@@ -66,7 +67,7 @@ $ check_php -s w
 Combine multiple module checks
 
 ```shell
-$ check_php -m mysql -m mysqli -m mbstring
+$ check_php -m mysql e -m mysqli w -m mbstring w
 [OK] No PHP Errors detected. | 'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [OK]   Module: "mysql" available
 [OK]   Module: "mysqli" available
@@ -75,7 +76,7 @@ $ check_php -m mysql -m mysqli -m mbstring
 
 Checking for PHP Updates (OK)
 ```shell
-$ check_php -u
+$ check_php -u e
 [OK] No PHP Errors detected. | 'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [OK]   No PHP startup errors
 [OK]   PHP Version 5.6.14 up to date.
@@ -83,7 +84,7 @@ $ check_php -u
 
 Checking for PHP Updates (Updates available)
 ```shell
-$ check_php -u
+$ check_php -u e
 [ERR] PHP Errors detected. | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=-;;;; 'Unknown'=0;;;;
 [OK]   No PHP startup errors
 [ERR]  PHP Version 5.6.13 too old. Latest: 5.6.14.
@@ -91,7 +92,7 @@ $ check_php -u
 
 Checking for PHP Updates (Able to differentiate between PHP 5.4, 5.5 and 5.6)
 ```shell
-$ check_php -u
+$ check_php -u e
 [ERR] PHP Errors detected. | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [OK]   No PHP startup errors
 [ERR]  PHP Version 5.5.1 too old. Latest: 5.5.30.
@@ -99,7 +100,7 @@ $ check_php -u
 
 A lot of options combined
 ```shell
-$ check_php -s w -m mysql -m mbstring -m xml -c date.timezone 'Europe/Berlin' -c session.cookie_secure "On" -u -v
+$ check_php -s w -m mysql e -m mbstring e -m xml e -c date.timezone 'Europe/Berlin' e -c session.cookie_secure "On" e -u e -v
 [ERR] PHP Errors detected. | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [OK]   No PHP startup errors
 [OK]   PHP Version 5.6.14 up to date.
