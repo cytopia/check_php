@@ -302,15 +302,15 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
-					MSG_STARTUP="[ERROR]   ${MSG_STARTUP}"
+					MSG_STARTUP="[CRITICAL] ${MSG_STARTUP}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
-					MSG_STARTUP="[WARNING] ${MSG_STARTUP}"
+					MSG_STARTUP="[WARNING]  ${MSG_STARTUP}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
 				HAS_STARTUP_ERROR="true"
 			else
-				MSG_STARTUP="[OK]      ${MSG_STARTUP}"
+				MSG_STARTUP="[OK]       ${MSG_STARTUP}"
 				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
 			fi
 			;;
@@ -335,15 +335,15 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
-					MSG_UPDATE="[ERROR]   ${MSG_UPDATE}"
+					MSG_UPDATE="[CRITICAL] ${MSG_UPDATE}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
-					MSG_UPDATE="[WARNING] ${MSG_UPDATE}"
+					MSG_UPDATE="[WARNING]  ${MSG_UPDATE}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
 				HAS_UPDATE_ERROR="true"
 			else
-				MSG_UPDATE="[OK]      ${MSG_UPDATE}"
+				MSG_UPDATE="[OK]       ${MSG_UPDATE}"
 				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
 			fi
 			;;
@@ -372,15 +372,15 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
-					MSG_MODULE="$(merge_text "${MSG_MODULE}" "[ERROR]   $TMP_TEXT")"
+					MSG_MODULE="$(merge_text "${MSG_MODULE}" "[CRITICAL] $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
-					MSG_MODULE="$(merge_text "${MSG_MODULE}" "[WARNING] $TMP_TEXT")"
+					MSG_MODULE="$(merge_text "${MSG_MODULE}" "[WARNING]  $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
 				HAS_MODULE_ERROR="true"
 			else
-				MSG_MODULE="$(merge_text "${MSG_MODULE}" "[OK]      $TMP_TEXT")"
+				MSG_MODULE="$(merge_text "${MSG_MODULE}" "[OK]       $TMP_TEXT")"
 				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
 			fi
 			;;
@@ -413,15 +413,15 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
-					MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[ERROR]   $TMP_TEXT")"
+					MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[CRITICAL] $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
-					MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[WARNING] $TMP_TEXT")"
+					MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[WARNING]  $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
 				HAS_CONFIG_ERROR="true"
 			else
-				MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[OK]      $TMP_TEXT")"
+				MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[OK]       $TMP_TEXT")"
 				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
 			fi
 			;;
