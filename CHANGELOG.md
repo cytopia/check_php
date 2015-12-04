@@ -1,6 +1,9 @@
 Version 0.3 (unreleased)
 -----------
 
+- [Enh]		Choose severity level for all checks (error or warning)
+- [Enh]		Remote checks now also check for wget, curl or fetch and only require one of them
+
 
 Version 0.2
 -----------
