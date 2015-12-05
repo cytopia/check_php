@@ -10,8 +10,6 @@ before_script:
 script:
   - shellcheck --shell=sh check_php
   - sh check_php
-  - sh check_php -V
-  - sh check_php -h
   - sh check_php -s w
   - sh check_php -s e
   - sh check_php -u w
@@ -20,4 +18,6 @@ script:
   - sh check_php -m json w
   - sh check_php -m json e
   - sh check_php -s e -u e -m json e -m mysql e -c short_open_tags "On" e
+  - sh check_php -V
+  - sh check_php -h
 
