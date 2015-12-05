@@ -3,7 +3,8 @@
 [Nagios Configuration](https://github.com/cytopia/check_php#1-nagios-configuration) |
 [Usage](https://github.com/cytopia/check_php#2-usage) |
 [Examples](https://github.com/cytopia/check_php#3-examples) |
-[Awesome](https://github.com/cytopia/check_php#4-awesome)
+[License](https://github.com/cytopia/check_php#4-license) |
+[Awesome](https://github.com/cytopia/check_php#5-awesome)
 
 [![Build Status](https://travis-ci.org/cytopia/check_php.svg?branch=master)](https://travis-ci.org/cytopia/check_php)
 [![Latest Stable Version](https://poser.pugx.org/cytopia/check_php/v/stable)](https://packagist.org/packages/cytopia/check_php) [![Total Downloads](https://poser.pugx.org/cytopia/check_php/downloads)](https://packagist.org/packages/cytopia/check_php) [![Latest Unstable Version](https://poser.pugx.org/cytopia/check_php/v/unstable)](https://packagist.org/packages/cytopia/check_php) [![License](https://poser.pugx.org/cytopia/check_php/license)](http://opensource.org/licenses/MIT)
@@ -140,8 +141,10 @@ PHP 5.6.14
 Zend Engine v2.6.0
 ```
 
+## 4. License
+[![license](https://poser.pugx.org/cytopia/check_php/license)](http://opensource.org/licenses/mit)
 
-## 4. Awesome
+## 5. Awesome
 
 Added by the following [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome) lists:
 
