@@ -27,7 +27,7 @@ Check_php is a POSIX compliant nagios plugin that will check for PHP startup err
 * Check for expected php.ini config directives (e.g.: date.timezone must be "Europe/Berlin", etc)
 * Each check can specify its own severity (warning or error)
 
-#### Motivation
+##### Motivation
 If you have to take care about many servers which have PHP installed you can use this plugin to make sure that all servers or all groups of server use the same configuration with the same compiled modules and are always up to date.
 
 
