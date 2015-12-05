@@ -1,10 +1,8 @@
 #!/bin/sh
 
 # TODO:
-# * check if php.ini is present
-# * specify to check against sec vulnerabilities
-# * TODO: Check if PHP exists (already does, but restructure)
-# * Use: curl and fetch as backup for (-u)
+# * Not allowed Modules
+# * Config should not be: "value"
 
 
 ################################################################################
