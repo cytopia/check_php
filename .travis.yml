@@ -12,6 +12,8 @@ script:
   - sh check_php
   - sh check_php -s w
   - sh check_php -s e
+  - sh check_php -u w
+  - sh check_php -u e
   - sh check_php -m json w
   - sh check_php -m json e
   - sh check_php -V
