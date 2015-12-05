@@ -38,6 +38,9 @@ $ARG1$:        -s e -u w -m curl e -m gettext e -m openssl e -m json e
 
 ## 2. Usage
 
+Each argument allows you to specify which severity should be triggered (`<w|e>`), where `w` triggers a warning and `e` triggers an error.
+Arguments that can be used multiple times (`-m` and `-c`) can of course use different severities each time. All severities will be aggregated and the highest severity (error > warning) will determine the final state.
+
 ```shell
 Usage: check_php [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-c <conf> <val> <w|e>] [-v]
        check_php -h
