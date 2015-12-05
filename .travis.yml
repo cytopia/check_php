@@ -14,10 +14,11 @@ script:
   - sh check_php -s e
   - sh check_php -u w
   - sh check_php -u e
-  - sh check_php -c max_execution_time 30 e
+  - sh check_php -c max_execution_time 0 w
+  - sh check_php -c max_execution_time 0 e
   - sh check_php -m json w
   - sh check_php -m json e
-  - sh check_php -s e -u e -m json e -m mysql e -c max_execution_time 30 e
+  - sh check_php -s e -u e -m json e -c max_execution_time 0 e
   - sh check_php -V
   - sh check_php -h
 
