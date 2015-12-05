@@ -1,5 +1,4 @@
 #!/bin/sh
-
 # TODO:
 # * Config should not be: "value"
 
@@ -324,11 +323,11 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
-					CNT_ERROR=$(expr "$CNT_ERROR" + 1)
+					CNT_ERROR=$((CNT_ERROR+1))
 					MSG_STARTUP="[CRITICAL] ${MSG_STARTUP}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
-					CNT_WARNING=$(expr "$CNT_WARNING" + 1)
+					CNT_WARNING=$((CNT_WARNING+1))
 					MSG_STARTUP="[WARNING]  ${MSG_STARTUP}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
@@ -359,11 +358,11 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
-					CNT_ERROR=$(expr "$CNT_ERROR" + 1)
+					CNT_ERROR=$((CNT_ERROR+1))
 					MSG_UPDATE="[CRITICAL] ${MSG_UPDATE}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
-					CNT_WARNING=$(expr "$CNT_WARNING" + 1)
+					CNT_WARNING=$((CNT_WARNING+1))
 					MSG_UPDATE="[WARNING]  ${MSG_UPDATE}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
@@ -398,11 +397,11 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
-					CNT_ERROR=$(expr "$CNT_ERROR" + 1)
+					CNT_ERROR=$((CNT_ERROR+1))
 					MSG_MODULE="$(merge_text "${MSG_MODULE}" "[CRITICAL] $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
-					CNT_WARNING=$(expr "$CNT_WARNING" + 1)
+					CNT_WARNING=$((CNT_WARNING+1))
 					MSG_MODULE="$(merge_text "${MSG_MODULE}" "[WARNING]  $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
@@ -436,11 +435,11 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
-					CNT_ERROR=$(expr "$CNT_ERROR" + 1)
+					CNT_ERROR=$((CNT_ERROR+1))
 					MSG_M_BLACKLIST="$(merge_text "${MSG_M_BLACKLIST}" "[CRITICAL] $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
-					CNT_WARNING=$(expr "$CNT_WARNING" + 1)
+					CNT_WARNING=$((CNT_WARNING+1))
 					MSG_M_BLACKLIST="$(merge_text "${MSG_M_BLACKLIST}" "[WARNING]  $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
@@ -479,11 +478,11 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
-					CNT_ERROR=$(expr "$CNT_ERROR" + 1)
+					CNT_ERROR=$((CNT_ERROR+1))
 					MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[CRITICAL] $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
-					CNT_WARNING=$(expr "$CNT_WARNING" + 1)
+					CNT_WARNING=$((CNT_WARNING+1))
 					MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[WARNING]  $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
