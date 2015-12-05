@@ -1,7 +1,8 @@
 Version 0.4 (unreleased)
 -----------
 
--
+- [Enh]		Added ability to check for blacklisted PHP modules
+- [Fix]		Performance data: fixed error and warning count
 
 Version 0.3
 -----------

@@ -1,7 +1,6 @@
 #!/bin/sh
 
 # TODO:
-# * Not allowed Modules
 # * Config should not be: "value"
 
 
@@ -47,7 +46,7 @@ PHP="$(which php)"
 ############################################################
 
 print_usage() {
-	printf "Usage: %s [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-c <conf> <val> <w|e>] [-v]\n" "${INFO_NAME}"
+	printf "Usage: %s [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-b <module> <w|e> [-c <conf> <val> <w|e>] [-v]\n" "${INFO_NAME}"
 	printf "       %s -h\n" "${INFO_NAME}"
 	printf "       %s -V\n\n" "${INFO_NAME}"
 	printf "Nagios plugin that will check if PHP exists, for PHP startup errors,\n"
@@ -63,6 +62,10 @@ print_usage() {
 	printf "                         nagios warning/error if the module was not compiled against PHP.\n"
 	printf "                         Use multiple times to check against multiple modules.\n"
 	printf "                         Example: -m \"mysql\" w -m \"mysqli\" e\n\n"
+	printf "  -b <module> <w|e>      [multiple] Check PHP for modules that should not be compiled in and display\n"
+	printf "                         nagios warning/error if the module is compiled against PHP.\n"
+	printf "                         Use multiple times to check for multiple blacklisted modules.\n"
+	printf "                         Example: -b \"mysql\" w -b \"mysqli\" e\n\n"
 	printf "  -c <conf> <val> <w|e>  [multiple] Check for misconfigured directives in php.ini and display\n"
 	printf "                         nagios warning/error if the configuration does not match.\n"
 	printf "                         Use multiple times to check against multiple configurations.\n"
@@ -238,6 +241,20 @@ check_module() {
 	fi
 }
 
+check_blacklisted_module() {
+	MODULE="$1"
+	CMD="$PHP -m 2>/dev/null | grep -cE '^${MODULE}$'"
+	CNT="$(eval "$CMD")"
+
+	if [ "$CNT" = "0" ]; then
+		echo "Blacklisted module: \"$MODULE\" not available"
+		return $EXIT_OK
+	else
+		echo "Blacklisted module: \"$MODULE\" available, but not allowed"
+		return $EXIT_ERR
+	fi
+}
+
 
 ################################################################################
 #
@@ -265,6 +282,7 @@ fi
 MSG_STARTUP=""
 MSG_UPDATE=""
 MSG_MODULE=""
+MSG_M_BLACKLIST=""
 MSG_CONFIG=""
 MSG_VERBOSE=""
 
@@ -272,7 +290,13 @@ MSG_VERBOSE=""
 HAS_STARTUP_ERROR=""
 HAS_UPDATE_ERROR=""
 HAS_MODULE_ERROR=""
+HAS_M_BLACKLIST_ERROR=""
 HAS_CONFIG_ERROR=""
+
+# Count warnings and errors for performance data
+CNT_ERROR="0"
+CNT_WARNING="0"
+
 
 # Final exit code
 NAGIOS_EXIT="$EXIT_OK"
@@ -300,9 +324,11 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
+					CNT_ERROR=`expr $CNT_ERROR + 1`
 					MSG_STARTUP="[CRITICAL] ${MSG_STARTUP}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
+					CNT_WARNING=`expr $CNT_WARNING + 1`
 					MSG_STARTUP="[WARNING]  ${MSG_STARTUP}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
@@ -333,9 +359,11 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
+					CNT_ERROR=`expr $CNT_ERROR + 1`
 					MSG_UPDATE="[CRITICAL] ${MSG_UPDATE}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
+					CNT_WARNING=`expr $CNT_WARNING + 1`
 					MSG_UPDATE="[WARNING]  ${MSG_UPDATE}"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
@@ -370,9 +398,11 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
+					CNT_ERROR=`expr $CNT_ERROR + 1`
 					MSG_MODULE="$(merge_text "${MSG_MODULE}" "[CRITICAL] $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
+					CNT_WARNING=`expr $CNT_WARNING + 1`
 					MSG_MODULE="$(merge_text "${MSG_MODULE}" "[WARNING]  $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
@@ -383,8 +413,46 @@ while test -n "$1"; do
 			fi
 			;;
 
+		# ---- 4 Evaluate blacklisted modules
+		-b)
+			# Get next arg in list (Module name)
+			shift
+			MODULE="$1"
 
-		# ---- 4. Evaluate wrong configuration
+			# Get next arg in list (Exit code)
+			shift
+			SEVERITY="$1"
+
+			# Check valid exit code
+			if [ "$SEVERITY" != "w" ] && [ "$SEVERITY" != "e" ]; then
+				echo "Invalid value \"$SEVERITY\" for option \"-b\"."
+				exit $EXIT_UNKNOWN
+			fi
+
+			# Execute Command
+			TMP_TEXT="$(check_blacklisted_module "$MODULE")"
+			TMP_EXIT="$?"
+
+			# Merge exit codes
+			if [ "$TMP_EXIT" != "0" ]; then
+				if [ "$SEVERITY" = "e" ]; then
+					CNT_ERROR=`expr $CNT_ERROR + 1`
+					MSG_M_BLACKLIST="$(merge_text "${MSG_M_BLACKLIST}" "[CRITICAL] $TMP_TEXT")"
+					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
+				else
+					CNT_WARNING=`expr $CNT_WARNING + 1`
+					MSG_M_BLACKLIST="$(merge_text "${MSG_M_BLACKLIST}" "[WARNING]  $TMP_TEXT")"
+					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
+				fi
+				HAS_M_BLACKLIST_ERROR="true"
+			else
+				MSG_M_BLACKLIST="$(merge_text "${MSG_M_BLACKLIST}" "[OK]       $TMP_TEXT")"
+				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
+			fi
+			;;
+
+
+		# ---- 5. Evaluate wrong configuration
 		-c)
 			# Get next arg in list (Config name)
 			shift
@@ -411,9 +479,11 @@ while test -n "$1"; do
 			# Merge exit codes
 			if [ "$TMP_EXIT" != "0" ]; then
 				if [ "$SEVERITY" = "e" ]; then
+					CNT_ERROR=`expr $CNT_ERROR + 1`
 					MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[CRITICAL] $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "2")"
 				else
+					CNT_WARNING=`expr $CNT_WARNING + 1`
 					MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[WARNING]  $TMP_TEXT")"
 					NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "1")"
 				fi
@@ -461,6 +531,9 @@ fi
 if [ "$HAS_MODULE_ERROR" != "" ]; then
 	INFO="$(merge_text "${INFO}" "Missing module(s)" ", ")"
 fi
+if [ "$HAS_M_BLACKLIST_ERROR" != "" ]; then
+	INFO="$(merge_text "${INFO}" "Blacklisted module(s)" ", ")"
+fi
 if [ "$HAS_CONFIG_ERROR" != "" ]; then
 	INFO="$(merge_text "${INFO}" "Wrong config" ", ")"
 fi
@@ -471,18 +544,19 @@ fi
 if [ "$NAGIOS_EXIT" = "$EXIT_OK" ]; then
 	printf "%s | %s\n" "[OK] PHP ${PHPV} is healthy" "'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
 elif [ "$NAGIOS_EXIT" = "$EXIT_WARN" ]; then
-	printf "%s: %s | %s\n" "[WARN] PHP ${PHPV} has warnings" "${INFO}" "'OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;"
+	printf "%s: %s | %s\n" "[WARN] PHP ${PHPV} has warnings" "${INFO}" "'OK'=0;;;; 'Errors'=0;;;; 'Warnings'=${CNT_WARNING};;;; 'Unknown'=0;;;;"
 elif [ "$NAGIOS_EXIT" = "$EXIT_ERR" ]; then
-	printf "%s: %s | %s\n" "[ERROR] PHP ${PHPV} has errors" "${INFO}" "'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
+	printf "%s: %s | %s\n" "[ERROR] PHP ${PHPV} has errors" "${INFO}" "'OK'=0;;;; 'Errors'=${CNT_ERROR};;;; 'Warnings'=${CNT_WARNING};;;; 'Unknown'=0;;;;"
 else
-	printf "%s: %s | %s\n" "[UNKNOWN] PHP ${PHPV} is at unknown state - check extended info." "${INFO}" "OK'=0;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=1;;;;"
+	printf "%s: %s | %s\n" "[UNKNOWN] PHP ${PHPV} is at unknown state - check extended info." "${INFO}" "OK'=0;;;; 'Errors'=${CNT_ERROR};;;; 'Warnings'=${CNT_WARNING};;;; 'Unknown'=1;;;;"
 fi
 
-if [ "$MSG_STARTUP" != "" ]; then echo "$MSG_STARTUP"; fi
-if [ "$MSG_UPDATE"  != "" ]; then echo "$MSG_UPDATE";  fi
-if [ "$MSG_MODULE"  != "" ]; then echo "$MSG_MODULE";  fi
-if [ "$MSG_CONFIG"  != "" ]; then echo "$MSG_CONFIG";  fi
-if [ "$MSG_VERBOSE" != "" ]; then echo "$MSG_VERBOSE"; fi
+if [ "$MSG_STARTUP"     != "" ]; then echo "$MSG_STARTUP";     fi
+if [ "$MSG_UPDATE"      != "" ]; then echo "$MSG_UPDATE";      fi
+if [ "$MSG_MODULE"      != "" ]; then echo "$MSG_MODULE";      fi
+if [ "$MSG_M_BLACKLIST" != "" ]; then echo "$MSG_M_BLACKLIST"; fi # Blacklisted Modules
+if [ "$MSG_CONFIG"      != "" ]; then echo "$MSG_CONFIG";      fi
+if [ "$MSG_VERBOSE"     != "" ]; then echo "$MSG_VERBOSE";     fi
 
 exit "$NAGIOS_EXIT"
 
