@@ -51,64 +51,64 @@ Checking against prefered timezone and compiled module `mysql`
 
 ```shell
 $ check_php -c "date.timezone" "Europe/Berlin" -m mysql e
-[ERR] PHP Errors detected. | OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
-[ERR]  Module: "mysql" not available
-[OK]   Config "date.timezone" = "Europe/Berlin"
+[ERR] PHP 5.6.16 has errors: Missing module(s) | OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
+[CRITICAL] Module: "mysql" not available
+[OK]       Config "date.timezone" = "Europe/Berlin"
 ```
 
 Checking for PHP startup errors
 
 ```shell
 $ check_php -s w
-[WARN] PHP Warnings detected. | OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;
-[WARN] PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/local/Cellar/php56/5.6.14/lib/php/extensions/no-debug-non-zts-20131226/test' - dlopen(/usr/local/Cellar/php56/5.6.14/lib/php/extensions/no-debug-non-zts-20131226/test, 9): image not found in Unknown on line 0
+[WARN] PHP 5.6.16 has warning: Startup errors | OK'=0;;;; 'Errors'=0;;;; 'Warnings'=1;;;; 'Unknown'=0;;;;
+[WARNING]  PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/local/Cellar/php56/5.6.14/lib/php/extensions/no-debug-non-zts-20131226/test' - dlopen(/usr/local/Cellar/php56/5.6.14/lib/php/extensions/no-debug-non-zts-20131226/test, 9): image not found in Unknown on line 0
 ```
 
 Combine multiple module checks
 
 ```shell
 $ check_php -m mysql e -m mysqli w -m mbstring w
-[OK] No PHP Errors detected. | 'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
-[OK]   Module: "mysql" available
-[OK]   Module: "mysqli" available
-[OK]   Module: "mbstring" available
+[OK] PHP 5.6.16 is healthy | 'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
+[OK]       Module: "mysql" available
+[OK]       Module: "mysqli" available
+[OK]       Module: "mbstring" available
 ```
 
 Checking for PHP Updates (OK)
 ```shell
 $ check_php -u e
-[OK] No PHP Errors detected. | 'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
-[OK]   No PHP startup errors
-[OK]   PHP Version 5.6.14 up to date.
+[OK] PHP 5.6.16 is healthy | 'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
+[OK]       No PHP startup errors
+[OK]       PHP Version 5.6.14 up to date.
 ```
 
 Checking for PHP Updates (Updates available)
 ```shell
 $ check_php -u e
-[ERR] PHP Errors detected. | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=-;;;; 'Unknown'=0;;;;
-[OK]   No PHP startup errors
-[ERR]  PHP Version 5.6.13 too old. Latest: 5.6.14.
+[ERR] PHP 5.6.13 has errors: Updates available | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=-;;;; 'Unknown'=0;;;;
+[OK]       No PHP startup errors
+[CRITICAL] PHP Version 5.6.13 too old. Latest: 5.6.14.
 ```
 
 Checking for PHP Updates (Able to differentiate between PHP 5.4, 5.5 and 5.6)
 ```shell
 $ check_php -u e
-[ERR] PHP Errors detected. | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
-[OK]   No PHP startup errors
-[ERR]  PHP Version 5.5.1 too old. Latest: 5.5.30.
+[ERR] PHP 5.5.1 has errors: Updates available | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
+[OK]       No PHP startup errors
+[CRITICAL] PHP Version 5.5.1 too old. Latest: 5.5.30.
 ```
 
 A lot of options combined
 ```shell
 $ check_php -s w -m mysql e -m mbstring e -m xml e -c date.timezone 'Europe/Berlin' e -c session.cookie_secure "On" e -u e -v
-[ERR] PHP Errors detected. | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
-[OK]   No PHP startup errors
-[OK]   PHP Version 5.6.14 up to date.
-[OK]   Module: "mysql" available
-[OK]   Module: "mbstring" available
-[OK]   Module: "xml" available
-[OK]   Config "date.timezone" = "Europe/Berlin"
-[ERR]  Config "session.cookie_secure" = "Off", excpected: "On"
+[ERR] PHP 5.6.14 has errors: Wrong config | 'OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
+[OK]       No PHP startup errors
+[OK]       PHP Version 5.6.14 up to date.
+[OK]       Module: "mysql" available
+[OK]       Module: "mbstring" available
+[OK]       Module: "xml" available
+[OK]       Config "date.timezone" = "Europe/Berlin"
+[CRITICAL] Config "session.cookie_secure" = "Off", excpected: "On"
 PHP 5.6.14
 Zend Engine v2.6.0
 ```
