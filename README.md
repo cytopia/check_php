@@ -50,7 +50,7 @@ missing modules, misconfigured directives and available updates.
 Checking against prefered timezone and compiled module `mysql`
 
 ```shell
-$ check_php -c "date.timezone" "Europe/Berlin" -m mysql e
+$ check_php -c "date.timezone" "Europe/Berlin" e -m mysql e
 [ERR] PHP 5.6.16 has errors: Missing module(s) | OK'=0;;;; 'Errors'=1;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;
 [CRITICAL] Module: "mysql" not available
 [OK]       Config "date.timezone" = "Europe/Berlin"
