@@ -1,11 +1,16 @@
 # check_php
 
+[Nagios Configuration](https://github.com/cytopia/check_php#1-nagios-configuration) |
+[Usage](https://github.com/cytopia/check_php#2-usage) |
+[Examples](https://github.com/cytopia/check_php#3-examples) |
+[Awesome](https://github.com/cytopia/check_php#4-awesome)
+
 [![Build Status](https://travis-ci.org/cytopia/check_php.svg?branch=master)](https://travis-ci.org/cytopia/check_php)
 [![Latest Stable Version](https://poser.pugx.org/cytopia/check_php/v/stable)](https://packagist.org/packages/cytopia/check_php) [![Total Downloads](https://poser.pugx.org/cytopia/check_php/downloads)](https://packagist.org/packages/cytopia/check_php) [![Latest Unstable Version](https://poser.pugx.org/cytopia/check_php/v/unstable)](https://packagist.org/packages/cytopia/check_php) [![License](https://poser.pugx.org/cytopia/check_php/license)](http://opensource.org/licenses/MIT)
 [![POSIX](https://img.shields.io/badge/posix-100%25-brightgreen.svg)](https://en.wikipedia.org/?title=POSIX)
 [![Type](https://img.shields.io/badge/type-%2Fbin%2Fsh-red.svg)](https://en.wikipedia.org/?title=Bourne_shell)
 
-Check_php is a POSIX compliant nagios plugin that will check for PHP startup errors (`-s`), missing PHP modules (`-m`), misconfigured directives in php.ini (`-c`) and for available PHP updates (`-u`).
+Check_php is a POSIX compliant nagios plugin that will check for PHP startup errors (`-s`), missing PHP modules (`-m`), misconfigured directives in php.ini (`-c`) and for available PHP updates (`-u`). This plugin supports performance data (error and warning counts over time) and long output (exact detail about all problems).
 
 ##### Requirements
 | Program  | Required | Description |
@@ -16,7 +21,7 @@ Check_php is a POSIX compliant nagios plugin that will check for PHP startup err
 
 
 
-## Nagios Configuration
+## 1. Nagios Configuration
 ### Command definition
 In order to check php on remote servers you will need to make use of `check_by_ssh`.
 ```shell
@@ -30,7 +35,7 @@ check command: check_by_ssh_php
 $ARG1$:        -s e -u w -m curl e -m gettext e -m openssl e -m json e
 ```
 
-## Usage
+## 2. Usage
 
 ```shell
 Usage: check_php [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-c <conf> <val> <w|e>] [-v]
@@ -67,7 +72,7 @@ missing modules, misconfigured directives and available updates.
 ```
 
 
-## Examples
+## 3. Examples
 
 Checking against prefered timezone and compiled module `mysql`
 
@@ -136,7 +141,7 @@ Zend Engine v2.6.0
 ```
 
 
-## Awesome
+## 4. Awesome
 
 Added by the following [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome) lists:
 
