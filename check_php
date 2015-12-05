@@ -555,13 +555,13 @@ fi
 # 'label'=value[UOM];[warn];[crit];[min];[max]
 
 if [ "$NAGIOS_EXIT" = "$EXIT_OK" ]; then
-	printf "%s | %s\n" "[OK] PHP ${PHPV} is healthy" "'OK'=${CNT_OK};;;; 'Errors'=${CNT_ERROR};1;1;; 'Warnings'=${CNT_WARNING};1;;; 'Unknown'=0;;;;"
+	printf "%s | %s\n" "[OK] PHP ${PHPV} is healthy" "'OK'=${CNT_OK};;;0;${CNT_ALL} 'Errors'=${CNT_ERROR};1;1;0;${CNT_ALL} 'Warnings'=${CNT_WARNING};1;;0;${CNT_ALL} 'Unknown'=0;;;0;${CNT_ALL}"
 elif [ "$NAGIOS_EXIT" = "$EXIT_WARN" ]; then
-	printf "%s: %s | %s\n" "[WARN] PHP ${PHPV} has warnings" "${INFO}" "'OK'=${CNT_OK};;;; 'Errors'=${CNT_ERROR};1;1;; 'Warnings'=${CNT_WARNING};1;;; 'Unknown'=0;;;;"
+	printf "%s: %s | %s\n" "[WARN] PHP ${PHPV} has warnings" "${INFO}" "'OK'=${CNT_OK};;;0;${CNT_ALL} 'Errors'=${CNT_ERROR};1;1;0;${CNT_ALL} 'Warnings'=${CNT_WARNING};1;;0;${CNT_ALL} 'Unknown'=0;;;0;${CNT_ALL}"
 elif [ "$NAGIOS_EXIT" = "$EXIT_ERR" ]; then
-	printf "%s: %s | %s\n" "[ERROR] PHP ${PHPV} has errors" "${INFO}" "'OK'=${CNT_OK};;;; 'Errors'=${CNT_ERROR};1;1;; 'Warnings'=${CNT_WARNING};1;;; 'Unknown'=0;;;;"
+	printf "%s: %s | %s\n" "[ERROR] PHP ${PHPV} has errors" "${INFO}" "'OK'=${CNT_OK};;;0;${CNT_ALL} 'Errors'=${CNT_ERROR};1;1;0;${CNT_ALL} 'Warnings'=${CNT_WARNING};1;;0;${CNT_ALL} 'Unknown'=0;;;0;${CNT_ALL}"
 else
-	printf "%s: %s | %s\n" "[UNKNOWN] PHP ${PHPV} is at unknown state - check extended info." "${INFO}" "OK'=0;;;; 'Errors'=${CNT_ERROR};1;1;; 'Warnings'=${CNT_WARNING};1;;; 'Unknown'=1;;;;"
+	printf "%s: %s | %s\n" "[UNKNOWN] PHP ${PHPV} is at unknown state - check extended info." "${INFO}" "OK'=0;;;0;${CNT_ALL} 'Errors'=${CNT_ERROR};1;1;0;${CNT_ALL} 'Warnings'=${CNT_WARNING};1;;0;${CNT_ALL} 'Unknown'=1;;;0;${CNT_ALL}"
 fi
 
 if [ "$MSG_STARTUP"     != "" ]; then echo "$MSG_STARTUP";     fi

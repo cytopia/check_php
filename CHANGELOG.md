@@ -1,6 +1,7 @@
 Version 0.4 (unreleased)
 -----------
 
+- [Enh]		Performance data: min+max values
 - [Enh]		Performance data: warn+crit thresholds
 - [Enh]		Added ability to check for blacklisted PHP modules
 - [Fix]		Performance data: fixed error and warning count
