@@ -9,4 +9,10 @@ before_script:
 script:
   - shellcheck --shell=sh check_php
   - sh check_php
+  - sh check_php -s w
+  - sh check_php -s e
+  - sh check_php -m json w
+  - sh check_php -m json e
+  - sh check_php -V
+  - sh check_php -h
 
