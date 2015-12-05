@@ -15,7 +15,7 @@ name:    check_by_ssh_php
 command: $USER1$/check_by_ssh -H $HOSTADDRESS$ -t 60 -l "$USER17$" -C "$USER22$/check_php $ARG1$"
 ```
 ### Service definition
-In the above command definition there is only one argument variable assigned to `check_php`: `$ARG1`. So you can easily assign all required arguments to this single variable:
+In the above command definition there is only one argument variable assigned to `check_php`: `$ARG1`. So you can easily assign all required arguments to this single variable in the service definition:
 ```shell
 check command: check_by_ssh_php
 $ARG1$:        -s e -u w -m curl e -m gettext e -m openssl e -m json e
