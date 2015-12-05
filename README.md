@@ -7,6 +7,15 @@
 
 Check_php is a POSIX compliant nagios plugin that will check for PHP startup errors (`-s`), missing PHP modules (`-m`), misconfigured directives in php.ini (`-c`) and for available PHP updates (`-u`).
 
+##### Requirements
+| Program  | Required | Description |
+| ------------- | ------------- | -------- |
+| bourne shell (sh)  | yes  | The whole script is written in pure bourne shell (sh) and is 100% Posix compliant |
+| [check_by_ssh](https://www.monitoring-plugins.org/doc/man/check_by_ssh.html)  | yes  | This nagios plugin is used as a wrapper to check on remote hosts |
+| wget, curl or fetch | Optional  | Either one of them is required if you want to check against PHP updates. (`-u`) |
+
+
+
 ## Nagios Configuration
 ### Command definition
 In order to check php on remote servers you will need to make use of `check_by_ssh`.
