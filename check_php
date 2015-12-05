@@ -12,8 +12,8 @@ INFO_AUTHOR="Patrick Plocke <patrick@plocke.de>"
 INFO_GPGKEY="0x28BF179F"
 INFO_LICENSE="MIT"
 INFO_NAME="check_php"
-INFO_DATE="2015-12-04"
-INFO_VERSION="0.3"
+INFO_DATE="2015-12-05"
+INFO_VERSION="0.4"
 
 
 # Check for performance data:
@@ -293,6 +293,8 @@ HAS_M_BLACKLIST_ERROR=""
 HAS_CONFIG_ERROR=""
 
 # Count warnings and errors for performance data
+CNT_ALL="0"
+CNT_OK="0"
 CNT_ERROR="0"
 CNT_WARNING="0"
 
@@ -333,9 +335,11 @@ while test -n "$1"; do
 				fi
 				HAS_STARTUP_ERROR="true"
 			else
+				CNT_OK=$((CNT_OK+1))
 				MSG_STARTUP="[OK]       ${MSG_STARTUP}"
 				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
 			fi
+			CNT_ALL=$((CNT_ALL+1))
 			;;
 
 
@@ -368,9 +372,11 @@ while test -n "$1"; do
 				fi
 				HAS_UPDATE_ERROR="true"
 			else
+				CNT_OK=$((CNT_OK+1))
 				MSG_UPDATE="[OK]       ${MSG_UPDATE}"
 				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
 			fi
+			CNT_ALL=$((CNT_ALL+1))
 			;;
 
 
@@ -407,9 +413,11 @@ while test -n "$1"; do
 				fi
 				HAS_MODULE_ERROR="true"
 			else
+				CNT_OK=$((CNT_OK+1))
 				MSG_MODULE="$(merge_text "${MSG_MODULE}" "[OK]       $TMP_TEXT")"
 				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
 			fi
+			CNT_ALL=$((CNT_ALL+1))
 			;;
 
 		# ---- 4 Evaluate blacklisted modules
@@ -445,9 +453,11 @@ while test -n "$1"; do
 				fi
 				HAS_M_BLACKLIST_ERROR="true"
 			else
+				CNT_OK=$((CNT_OK+1))
 				MSG_M_BLACKLIST="$(merge_text "${MSG_M_BLACKLIST}" "[OK]       $TMP_TEXT")"
 				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
 			fi
+			CNT_ALL=$((CNT_ALL+1))
 			;;
 
 
@@ -488,9 +498,11 @@ while test -n "$1"; do
 				fi
 				HAS_CONFIG_ERROR="true"
 			else
+				CNT_OK=$((CNT_OK+1))
 				MSG_CONFIG="$(merge_text "${MSG_CONFIG}" "[OK]       $TMP_TEXT")"
 				NAGIOS_EXIT="$(merge_exit_codes "$NAGIOS_EXIT" "0")"
 			fi
+			CNT_ALL=$((CNT_ALL+1))
 			;;
 
 		# ---- Be versbose
@@ -539,15 +551,17 @@ fi
 
 
 #### Performance Data
+# @see http://docs.icinga.org/latest/en/perfdata.html
+# 'label'=value[UOM];[warn];[crit];[min];[max]
 
 if [ "$NAGIOS_EXIT" = "$EXIT_OK" ]; then
-	printf "%s | %s\n" "[OK] PHP ${PHPV} is healthy" "'OK'=1;;;; 'Errors'=0;;;; 'Warnings'=0;;;; 'Unknown'=0;;;;"
+	printf "%s | %s\n" "[OK] PHP ${PHPV} is healthy" "'OK'=${CNT_OK};;;; 'Errors'=${CNT_ERROR};1;1;; 'Warnings'=${CNT_WARNING};1;;; 'Unknown'=0;;;;"
 elif [ "$NAGIOS_EXIT" = "$EXIT_WARN" ]; then
-	printf "%s: %s | %s\n" "[WARN] PHP ${PHPV} has warnings" "${INFO}" "'OK'=0;;;; 'Errors'=0;;;; 'Warnings'=${CNT_WARNING};;;; 'Unknown'=0;;;;"
+	printf "%s: %s | %s\n" "[WARN] PHP ${PHPV} has warnings" "${INFO}" "'OK'=${CNT_OK};;;; 'Errors'=${CNT_ERROR};1;1;; 'Warnings'=${CNT_WARNING};1;;; 'Unknown'=0;;;;"
 elif [ "$NAGIOS_EXIT" = "$EXIT_ERR" ]; then
-	printf "%s: %s | %s\n" "[ERROR] PHP ${PHPV} has errors" "${INFO}" "'OK'=0;;;; 'Errors'=${CNT_ERROR};;;; 'Warnings'=${CNT_WARNING};;;; 'Unknown'=0;;;;"
+	printf "%s: %s | %s\n" "[ERROR] PHP ${PHPV} has errors" "${INFO}" "'OK'=${CNT_OK};;;; 'Errors'=${CNT_ERROR};1;1;; 'Warnings'=${CNT_WARNING};1;;; 'Unknown'=0;;;;"
 else
-	printf "%s: %s | %s\n" "[UNKNOWN] PHP ${PHPV} is at unknown state - check extended info." "${INFO}" "OK'=0;;;; 'Errors'=${CNT_ERROR};;;; 'Warnings'=${CNT_WARNING};;;; 'Unknown'=1;;;;"
+	printf "%s: %s | %s\n" "[UNKNOWN] PHP ${PHPV} is at unknown state - check extended info." "${INFO}" "OK'=0;;;; 'Errors'=${CNT_ERROR};1;1;; 'Warnings'=${CNT_WARNING};1;;; 'Unknown'=1;;;;"
 fi
 
 if [ "$MSG_STARTUP"     != "" ]; then echo "$MSG_STARTUP";     fi
