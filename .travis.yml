@@ -2,6 +2,7 @@ language: sh
 
 before_script:
   - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu/ trusty-backports restricted main universe"
+  - sudo add-apt-repository ppa:ondrej/php5-5.6
   - sudo apt-get update -qq
   - sudo apt-get install -qq php
   - sudo apt-get install -qq shellcheck
