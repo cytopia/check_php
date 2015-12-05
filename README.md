@@ -7,6 +7,19 @@
 
 Check_php is a POSIX compliant nagios plugin that will check for PHP startup errors (`-s`), missing PHP modules (`-m`), misconfigured directives in php.ini (`-c`) and for available PHP updates (`-u`).
 
+## Nagios Configuration
+### Command definition
+In order to check php on remote servers you will need to make use of `check_by_ssh`.
+```shell
+name:    check_by_ssh_php
+command: $USER1$/check_by_ssh -H $HOSTADDRESS$ -t 60 -l "$USER17$" -C "$USER22$/check_php $ARG1$"
+```
+### Service definition
+In the above command definition there is only one argument variable assigned to `check_php`: `$ARG1`. So you can easily assign all required arguments to this single variable:
+```shell
+check command: check_by_ssh_php
+$ARG1$:        -s e -u w -m curl e -m gettext e -m openssl e -m json e
+```
 
 ## Usage
 
