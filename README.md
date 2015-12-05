@@ -24,6 +24,7 @@ Check_php is a POSIX compliant nagios plugin that will check for PHP startup err
 * Check for PHP startup errors
 * Check for PHP updates (inside minor versions and patch levels)
 * Check for missing PHP modules
+* Check for blacklisted PHP modules and throw err/warn if they are compiled in
 * Check for expected php.ini config directives (e.g.: date.timezone must be "Europe/Berlin", etc)
 * Each check can specify its own severity (warning or error)
 
@@ -51,7 +52,7 @@ Each argument allows you to specify which severity should be triggered (`<w|e>`)
 Arguments that can be used multiple times (`-m` and `-c`) can of course use different severities each time. All severities will be aggregated and the highest severity (error > warning) will determine the final state.
 
 ```shell
-Usage: check_php [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-c <conf> <val> <w|e>] [-v]
+Usage: check_php [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-b <module> <w|e> [-c <conf> <val> <w|e>] [-v]
        check_php -h
        check_php -V
 
@@ -71,6 +72,11 @@ missing modules, misconfigured directives and available updates.
                          nagios warning/error if the module was not compiled against PHP.
                          Use multiple times to check against multiple modules.
                          Example: -m "mysql" w -m "mysqli" e
+
+  -b <module> <w|e>      [multiple] Check PHP for modules that should not be compiled in and display
+                         nagios warning/error if the module is compiled against PHP.
+                         Use multiple times to check for multiple blacklisted modules.
+                         Example: -b "imagick" w -b "tidy" e
 
   -c <conf> <val> <w|e>  [multiple] Check for misconfigured directives in php.ini and display
                          nagios warning/error if the configuration does not match.
