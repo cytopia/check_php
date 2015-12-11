@@ -1,0 +1,19 @@
+name: check_php
+description: "file:///README.md"
+url: "https://github.com/cytopia/check_php"
+tags: PHP
+vendor: Linux
+target: Operating System
+type: Plugin
+license: MIT
+releases:
+  -
+    name: 0.4
+    description: "0.4 Release"
+    files:
+      -
+        name: check_php
+        url: "file:///check_php"
+        description: "Second release"
+        checksum: b1f96ca0c2e37c2d0338cd7092033f1b
+
