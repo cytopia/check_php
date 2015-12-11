@@ -13,6 +13,13 @@
 
 Check_php is a POSIX compliant nagios plugin that will check for PHP startup errors (`-s`), missing PHP modules (`-m`), misconfigured directives in php.ini (`-c`) and for available PHP updates (`-u`). This plugin supports performance data (error and warning counts over time) and long output (exact detail about all problems).
 
+---
+
+* `check_php` on [Icinga Exchange](https://exchange.icinga.org/cytopia/check_php)
+* `check_php` on [Nagios Exchange](https://exchange.nagios.org/directory/Plugins/Web-Servers/check_php/details)
+
+---
+
 ##### Requirements
 | Program  | Required | Description |
 | ------------- | ------------- | -------- |
