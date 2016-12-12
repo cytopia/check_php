@@ -1,29 +1,24 @@
 # check_php
 
-[Nagios Configuration](https://github.com/cytopia/check_php#1-nagios-configuration) |
-[Usage](https://github.com/cytopia/check_php#2-usage) |
-[Examples](https://github.com/cytopia/check_php#3-examples) |
-[License](https://github.com/cytopia/check_php#4-license) |
-[Awesome](https://github.com/cytopia/check_php#5-awesome)
+check_php is a POSIX compliant nagios plugin that will check for PHP startup errors (`-s`), missing PHP modules (`-m`), misconfigured directives in php.ini (`-c`) and for available PHP updates (`-u`). This plugin supports performance data (error and warning counts over time) and long output (exact detail about all problems).
 
 [![Build Status](https://travis-ci.org/cytopia/check_php.svg?branch=master)](https://travis-ci.org/cytopia/check_php)
 [![Latest Stable Version](https://poser.pugx.org/cytopia/check_php/v/stable)](https://packagist.org/packages/cytopia/check_php) [![Total Downloads](https://poser.pugx.org/cytopia/check_php/downloads)](https://packagist.org/packages/cytopia/check_php) [![Latest Unstable Version](https://poser.pugx.org/cytopia/check_php/v/unstable)](https://packagist.org/packages/cytopia/check_php) [![License](https://poser.pugx.org/cytopia/check_php/license)](http://opensource.org/licenses/MIT)
 [![POSIX](https://img.shields.io/badge/posix-100%25-brightgreen.svg)](https://en.wikipedia.org/?title=POSIX)
 [![Type](https://img.shields.io/badge/type-%2Fbin%2Fsh-red.svg)](https://en.wikipedia.org/?title=Bourne_shell)
 
+[Nagios Configuration](https://github.com/cytopia/check_php#1-nagios-configuration) |
+[Usage](https://github.com/cytopia/check_php#2-usage) |
+[Examples](https://github.com/cytopia/check_php#3-examples) |
+[License](https://github.com/cytopia/check_php#4-license) |
+[Awesome](https://github.com/cytopia/check_php#5-awesome)
+
 ---
 
-| [![Awesome-Nagios-Plugins](https://raw.githubusercontent.com/cytopia/awesome-nagios-plugins/master/doc/img/awesome-nagios.png)](https://github.com/cytopia/awesome-nagios-plugins) | Find more [awesome nagios plugins](https://github.com/cytopia/awesome-nagios-plugins) |
+| [![Awesome-Nagios-Plugins](https://raw.githubusercontent.com/cytopia/awesome-nagios-plugins/master/doc/img/awesome-nagios.png)](https://github.com/cytopia/awesome-nagios-plugins) | Find more plugins at [Awesome Nagios](https://github.com/cytopia/awesome-nagios-plugins) |
 |---|---|
-
----
-
-Check_php is a POSIX compliant nagios plugin that will check for PHP startup errors (`-s`), missing PHP modules (`-m`), misconfigured directives in php.ini (`-c`) and for available PHP updates (`-u`). This plugin supports performance data (error and warning counts over time) and long output (exact detail about all problems).
-
----
-
-* `check_php` on [Icinga Exchange](https://exchange.icinga.org/cytopia/check_php)
-* `check_php` on [Nagios Exchange](https://exchange.nagios.org/directory/Plugins/Web-Servers/check_php/details)
+| [![Icinga Exchange](https://raw.githubusercontent.com/cytopia/awesome-nagios-plugins/master/doc/img/icinga.png)](https://exchange.icinga.com/cytopia) | **Find more plugins at [Icinga Exchange](https://exchange.icinga.com/cytopia)** |
+| [![Nagios Exchange](https://raw.githubusercontent.com/cytopia/awesome-nagios-plugins/master/doc/img/nagios.png)](https://exchange.nagios.org/directory/Owner/cytopia/1) | **Find more plugins at [Nagios Exchange](https://exchange.nagios.org/directory/Owner/cytopia/1)** |
 
 ---
 

@@ -8,12 +8,12 @@
 #   V A R I A B L E S
 #
 ################################################################################
-INFO_AUTHOR="Patrick Plocke <patrick@plocke.de>"
-INFO_GPGKEY="0x28BF179F"
+INFO_AUTHOR="cytopia <cytopia@everythingcli.org>"
+INFO_GPGKEY="0x695128A2"
 INFO_LICENSE="MIT"
 INFO_NAME="check_php"
-INFO_DATE="2015-12-05"
-INFO_VERSION="0.4"
+INFO_DATE="2016-12-12"
+INFO_VERSION="0.5"
 
 
 # Check for performance data:
