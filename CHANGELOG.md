@@ -1,6 +1,14 @@
-Version 0.5 (unreleased)
+Version 0.6 (unreleased)
 -----------
 
+- [Fix]		Also check 4er and 7er PHP versions against updates
+
+
+Version 0.5
+-----------
+
+- [Enh]		Enhance documentation
+- [Enh]		Add to Icinga/Nagios Exchange
 
 Version 0.4
 -----------
