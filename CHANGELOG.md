@@ -1,4 +1,8 @@
-Version 0.6 (unreleased)
+Version 0.7 (unreleased)
+-----------
+
+
+Version 0.6
 -----------
 
 - [Fix]		Also check 4er and 7er PHP versions against updates

@@ -8,12 +8,12 @@ type: Plugin
 license: MIT
 releases:
   -
-    name: 0.5
-    description: "0.5 Release"
+    name: 0.6
+    description: "0.6 Release"
     files:
       -
         name: check_php
         url: "file:///check_php"
         description: "Check for PHP errors, sec updates and php.ini settings"
-        checksum: 4fc02e0b549b0a54cc53b855ea83b6d6
+        checksum: 93e4a170bcc33c5048237a2a4ea61e40
 

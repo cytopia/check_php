@@ -1,8 +1,8 @@
 {
 	"name": "cytopia/check_php",
-	"description": "Nagios plugin to check for php startup errors.",
+	"description": "Nagios or Icinga plugin to check for php startup errors.",
 	"type": "library",
-	"keywords": ["nagios", "nagios-plugin", "icinga", "php", "php-error"],
+	"keywords": ["nagios", "nagios-plugin", "icinga", "icinga2", "php", "php-error"],
 	"homepage": "https://github.com/cytopia/check_php",
 	"license": "MIT",
 	"authors": [
