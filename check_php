@@ -12,8 +12,8 @@ INFO_AUTHOR="cytopia <cytopia@everythingcli.org>"
 INFO_GPGKEY="0x695128A2"
 INFO_LICENSE="MIT"
 INFO_NAME="check_php"
-INFO_DATE="2016-12-12"
-INFO_VERSION="0.5"
+INFO_DATE="2016-12-23"
+INFO_VERSION="0.6"
 
 
 # Check for performance data:
@@ -150,11 +150,11 @@ check_version() {
 
 	# Latest available versions
 	if command -v wget >/dev/null 2>&1; then
-		PHP_LATEST="$(wget -qO- "https://secure.php.net/releases/index.php?json&version=5&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(wget -qO- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
 	elif command -v curl >/dev/null 2>&1; then
-		PHP_LATEST="$(curl --silent "https://secure.php.net/releases/index.php?json&version=5&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(curl --silent "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
 	elif command -v fetch >/dev/null 2>&1; then
-		PHP_LATEST="$(fetch --no-verify-hostname --no-verify-peer --quiet --output=- "https://secure.php.net/releases/index.php?json&version=5&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(fetch --no-verify-hostname --no-verify-peer --quiet --output=- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
 	else
 		echo "[UNKNOW] - check version requires wget, curl or fetch"
 		exit "$EXIT_UNKNOWN"
