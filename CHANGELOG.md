@@ -1,5 +1,10 @@
-Version 0.7 (unreleased)
+Version 0.8 (unreleased)
 -----------
+
+
+Version 0.7
+-----------
+- [Fix]		Fixed check for PHP startup-errors
 
 
 Version 0.6

@@ -12,8 +12,8 @@ INFO_AUTHOR="cytopia <cytopia@everythingcli.org>"
 INFO_GPGKEY="0x695128A2"
 INFO_LICENSE="MIT"
 INFO_NAME="check_php"
-INFO_DATE="2016-12-23"
-INFO_VERSION="0.6"
+INFO_DATE="2017-03-28"
+INFO_VERSION="0.7"
 
 
 # Check for performance data:
