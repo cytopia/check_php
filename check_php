@@ -82,7 +82,6 @@ print_version() {
 	printf "License: %s\n" "${INFO_LICENSE}"
 }
 
-
 merge_text() {
 	CURR_TEXT="$1"
 	NEXT_TEXT="$2"
@@ -152,11 +151,11 @@ check_version() {
 
 	# Latest available versions
 	if command -v wget >/dev/null 2>&1; then
-		PHP_LATEST="$(wget -qO- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(wget -qO- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u -r)"
 	elif command -v curl >/dev/null 2>&1; then
-		PHP_LATEST="$(curl --silent "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(curl --silent "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u -r)"
 	elif command -v fetch >/dev/null 2>&1; then
-		PHP_LATEST="$(fetch --no-verify-hostname --no-verify-peer --quiet --output=- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(fetch --no-verify-hostname --no-verify-peer --quiet --output=- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u -r)"
 	else
 		echo "[UNKNOW] - check version requires wget, curl or fetch"
 		exit "$EXIT_UNKNOWN"
