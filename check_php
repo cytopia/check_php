@@ -69,6 +69,8 @@ print_usage() {
 	printf "                         nagios warning/error if the configuration does not match.\n"
 	printf "                         Use multiple times to check against multiple configurations.\n"
 	printf "                         Example: -c \"date.timezone\" w -c \"Europe/Berlin\" e\n\n"
+	printf "  -p <path>              [optional] Define the path to the PHP binary that shall be used.\n"
+	printf "                         If no value is given, the current user's default PHP version will be checked.\n\n"
 	printf "  -v                     Be verbose (Show PHP Version and Zend Engine Version)\n\n"
 	printf "  -h                     Display help\n\n"
 	printf "  -V                     Display version\n"
