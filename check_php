@@ -254,6 +254,31 @@ check_blacklisted_module() {
 	fi
 }
 
+# Fetch PHP
+# ---------
+# Checks the given arguments for a '-p' option and sets the PHP
+# variable accordingly.
+fetch_php() {
+	while test -n "$1"; do
+		case "$1" in
+			# PHP binary otion.
+			-p)
+				shift
+				PHP="$1"
+
+				# Whether the given PHP binary doesn't exist.
+				if [ ! -x $PHP ]; then
+					echo "PHP binary not found at \"$PHP\" for option \"-p\"."
+					exit $EXIT_UNKNOWN
+				fi
+
+				break
+				;;
+		esac
+		shift
+	done
+}
+
 
 ################################################################################
 #
@@ -276,6 +301,8 @@ elif [ "$1" = "-V" ]; then
 	exit $EXIT_OK
 fi
 
+# Check for PHP binary option
+fetch_php "$@"
 
 # Extended Status Message
 MSG_STARTUP=""
@@ -515,6 +542,14 @@ while test -n "$1"; do
 			print_version
 			exit $EXIT_OK
 			;;
+
+		# ---- PHP binary
+		-p)
+			# The binary option is checked earlier. So just shift
+			# the path and move on.
+			shift
+			;;
+
 		*)
 			printf "Unknown argument: %s\n" "$1"
 			print_usage
