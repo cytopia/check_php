@@ -61,7 +61,7 @@ Each argument allows you to specify which severity should be triggered (`<w|e>`)
 Arguments that can be used multiple times (`-m` and `-c`) can of course use different severities each time. All severities will be aggregated and the highest severity (error > warning) will determine the final state.
 
 ```shell
-Usage: check_php [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-b <module> <w|e> [-c <conf> <val> <w|e>] [-v]
+Usage: check_php [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-b <module> <w|e> [-c <conf> <val> <w|e>] [-p <path>] [-v]
        check_php -h
        check_php -V
 
@@ -91,6 +91,10 @@ missing modules, misconfigured directives and available updates.
                          nagios warning/error if the configuration does not match.
                          Use multiple times to check against multiple configurations.
                          Example: -c "date.timezone" w -c "Europe/Berlin" e
+
+  -p <path>              [optional] Define the path to the PHP binary that shall be used.  
+                         If no value is given, the current user's default PHP version will be checked.
+                         Example: -p "/usr/bin/php"
 
   -v                     Be verbose (Show PHP Version and Zend Engine Version)
 
