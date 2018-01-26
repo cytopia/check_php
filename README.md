@@ -136,7 +136,7 @@ apply Service "php-" for (php => config in host.vars.php) {
   if ( config.php_config ) {
     vars.php_config = []
     for (key => value in config.php_config) {
-      vars.php_config += [ key + vars.php_delimiter + value.default + vars.php_delimiter + value.severity ]
+      vars.php_config += [ key + vars.php_delimiter + value["default"] + vars.php_delimiter + value["severity"] ]
     }
   }
 
@@ -175,8 +175,8 @@ object Host "node.example.com" {
     }
     php_config = {
       "date.timezone" = {
-        default = "Europe/Berlin"
-        severity = "w"
+        "default" = "Europe/Berlin"
+        "severity" = "w"
       }
     }
   }
