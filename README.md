@@ -72,7 +72,7 @@ object CheckCommand "php" {
     }
     "-u" = {
       value = "$php_updates$"
-      description = "Check for updated PHP version online. Allowed values are 'w' for warnings and 'e' for critical errors.This check requires wget, curl or fetch."
+      description = "Check for updated PHP version online. Allowed values are 'w' for warnings and 'e' for critical errors. This check requires wget, curl or fetch."
     }
     "-p" = {
       value = "$php_binary$"
@@ -96,6 +96,10 @@ object CheckCommand "php" {
       value = "$php_config$"
       description = "Check PHP setting directives that diverge from the given default value."
       repeat_key = true
+    }
+    "-v" = {
+      set_if = "$php_verbose$"
+      description = "Enable verbose mode."
     }
   }
 }
