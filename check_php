@@ -151,11 +151,11 @@ check_version() {
 
 	# Latest available versions
 	if command -v wget >/dev/null 2>&1; then
-		PHP_LATEST="$(wget -qO- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=100" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(wget -qO- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=100" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -t. -n -k1,1 -k2,2 -k3,3 -u -r)"
 	elif command -v curl >/dev/null 2>&1; then
-		PHP_LATEST="$(curl --silent "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=100" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(curl --silent "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=100" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -t. -n -k1,1 -k2,2 -k3,3 -u -r)"
 	elif command -v fetch >/dev/null 2>&1; then
-		PHP_LATEST="$(fetch --no-verify-hostname --no-verify-peer --quiet --output=- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=100" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(fetch --no-verify-hostname --no-verify-peer --quiet --output=- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=100" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -t. -n -k1,1 -k2,2 -k3,3 -u -r)"
 	else
 		echo "[UNKNOW] - check version requires wget, curl or fetch"
 		exit "$EXIT_UNKNOWN"
