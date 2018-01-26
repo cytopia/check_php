@@ -271,7 +271,7 @@ fetch_php() {
 				PHP="$1"
 
 				# Whether the given PHP binary doesn't exist.
-				if [ ! -x $PHP ]; then
+				if [ ! -x "$PHP" ]; then
 					echo "PHP binary not found at \"$PHP\" for option \"-p\"."
 					exit $EXIT_UNKNOWN
 				fi
