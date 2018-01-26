@@ -55,7 +55,132 @@ check command: check_by_ssh_php
 $ARG1$:        -s e -u w -m curl e -m gettext e -m openssl e -m json e
 ```
 
-## 2. Usage
+## 2. Icinga2 Configuration
+### Command definition
+```
+/* Check PHP health
+ */
+object CheckCommand "php" {
+  import "plugin-check-command"
+
+  command = [ PluginDir + "/check_php" ]
+
+  arguments = {
+    "-s" = {
+      value = "$php_startup$"
+      description = "Check for PHP startup errors and display warning or error if any exists. Allowed values are 'w' for warnings and 'e' for critical errors."
+    }
+    "-u" = {
+      value = "$php_updates$"
+      description = "Check for updated PHP version online. Allowed values are 'w' for warnings and 'e' for critical errors.This check requires wget, curl or fetch."
+    }
+    "-p" = {
+      value = "$php_binary$"
+      description = "Optional path to PHP binary. This argument allows to define a certain PHP binary to be checked. If none is defined, the default PHP version will be used."
+    }
+    "-d" = {
+      value = "$php_delimiter$"
+      description = "Delimiter for multi-value arguments."
+    }
+    "-m" = {
+      value = "$php_modules$"
+      description = "Check for required modules."
+      repeat_key = true
+    }
+    "-b" = {
+      value = "$php_blacklist$"
+      description = "Check for blacklisted modules."
+      repeat_key = true
+    }
+    "-c" = {
+      value = "$php_config$"
+      description = "Check PHP setting directives that diverge from the given default value."
+      repeat_key = true
+    }
+  }
+}
+```
+
+### Service definition example (using apply)
+```
+/* PHP Health
+ */
+apply Service "php-" for (php => config in host.vars.php) {
+  check_command = "php"
+  // Assuming your PHP setup doesn't change too often, we don't
+  // bother to check twice a day only.
+  check_interval = 12h
+
+  display_name = "PHP " + php
+  notes = "Checks currently installed PHP " + php + " health."
+
+  // Service variables from php definition.
+  vars += config
+  vars.php_delimiter = "|"
+  if ( config.php_modules ) {
+    vars.php_modules = []
+    for (key => value in config.php_modules) {
+      vars.php_modules += [ key + vars.php_delimiter + value ]
+    }
+  }
+  if ( config.php_blacklist ) {
+    vars.php_blacklist = []
+    for (key => value in config.php_blacklist) {
+      vars.php_blacklist += [ key + vars.php_delimiter + value ]
+    }
+  }
+  if ( config.php_config ) {
+    vars.php_config = []
+    for (key => value in config.php_config) {
+      vars.php_config += [ key + vars.php_delimiter + value.default + vars.php_delimiter + value.severity ]
+    }
+  }
+
+  // Application rules.
+  assign where host.name = NodeName && host.vars.php
+}
+```
+
+### Host object definition
+```
+object Host "node.example.com" {
+
+  // Other settings.
+
+  vars.php[ "7.1" ] = {
+    php_binary = "/opt/php/7.1/bin/php"
+    php_updates = "w"
+    php_startup = "e"
+    php_modules = {
+      intl = "w"
+      mbstring = "w"
+      soap = "w"
+      apcu = "w"
+      memcached = "w"
+      geoip = "w"
+      mongodb = "w"
+      imagick = "w"
+      redis = "w"
+      openssl = "w"
+      xml = "w"
+      json = "w"
+      curl = "w"
+    }
+    php_blacklist = {
+      mcrypt = "w"
+    }
+    php_config = {
+      "date.timezone" = {
+        default = "Europe/Berlin"
+        severity = "w"
+      }
+    }
+  }
+
+}
+```
+
+## 3. Usage
 
 Each argument allows you to specify which severity should be triggered (`<w|e>`), where `w` triggers a warning and `e` triggers an error.
 Arguments that can be used multiple times (`-m` and `-c`) can of course use different severities each time. All severities will be aggregated and the highest severity (error > warning) will determine the final state.
@@ -108,7 +233,7 @@ missing modules, misconfigured directives and available updates.
 ```
 
 
-## 3. Examples
+## 4. Examples
 
 Checking against prefered timezone and compiled module `mysql`
 
@@ -176,10 +301,10 @@ PHP 5.6.14
 Zend Engine v2.6.0
 ```
 
-## 4. License
+## 5. License
 [![license](https://poser.pugx.org/cytopia/check_php/license)](http://opensource.org/licenses/mit)
 
-## 5. Awesome
+## 6. Awesome
 
 Added by the following [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome) lists:
 
