@@ -61,7 +61,7 @@ Each argument allows you to specify which severity should be triggered (`<w|e>`)
 Arguments that can be used multiple times (`-m` and `-c`) can of course use different severities each time. All severities will be aggregated and the highest severity (error > warning) will determine the final state.
 
 ```shell
-Usage: check_php [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-b <module> <w|e> [-c <conf> <val> <w|e>] [-p <path>] [-v]
+Usage: check_php [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-b <module> <w|e> [-c <conf> <val> <w|e>] [-p <path>] [-d <delimiter>] [-v]
        check_php -h
        check_php -V
 
@@ -95,6 +95,10 @@ missing modules, misconfigured directives and available updates.
   -p <path>              [optional] Define the path to the PHP binary that shall be used.  
                          If no value is given, the current user's default PHP version will be checked.
                          Example: -p "/usr/bin/php"
+
+  -d <delimiter>         [optional] Delimiter used to concatenate arguments of the abobe options
+                         that require multiple values.
+                         Example: -d "|" -m "mysql|w" -b "mcrypt|w" -c "date.timezone|Europe/Berlin|e"
 
   -v                     Be verbose (Show PHP Version and Zend Engine Version)
 

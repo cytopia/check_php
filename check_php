@@ -45,7 +45,7 @@ PHP="$(which php)"
 ############################################################
 
 print_usage() {
-	printf "Usage: %s [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-b <module> <w|e> [-c <conf> <val> <w|e>] [-v]\n" "${INFO_NAME}"
+	printf "Usage: %s [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-b <module> <w|e> [-c <conf> <val> <w|e>] [ -p <path> ] [ -d <delimiter> ] [-v]\n" "${INFO_NAME}"
 	printf "       %s -h\n" "${INFO_NAME}"
 	printf "       %s -V\n\n" "${INFO_NAME}"
 	printf "Nagios plugin that will check if PHP exists, for PHP startup errors,\n"
@@ -71,6 +71,9 @@ print_usage() {
 	printf "                         Example: -c \"date.timezone\" w -c \"Europe/Berlin\" e\n\n"
 	printf "  -p <path>              [optional] Define the path to the PHP binary that shall be used.\n"
 	printf "                         If no value is given, the current user's default PHP version will be checked.\n\n"
+	printf "  -d <delimiter>         [optional] Delimiter used to concatenate arguments of the abobe options\n"
+	printf "                         that require multiple values.\n"
+	printf "                         Example: -d \"|\" -m \"mysqli|w\" -b \"mcrypt|w\" -c \"date.timezone|Europe/Berlin|e\"\n\n"
 	printf "  -v                     Be verbose (Show PHP Version and Zend Engine Version)\n\n"
 	printf "  -h                     Display help\n\n"
 	printf "  -V                     Display version\n"
@@ -280,6 +283,24 @@ fetch_php() {
 	done
 }
 
+# Get delimiter
+# -------------
+# Checks the given arguments for a '-d' option and sets the DELIMITER
+# variable accordingly.
+get_delimiter() {
+	while test -n "$1"; do
+		case "$1" in
+			# Delimiter.
+			-d)
+				shift
+				DELIMITER="$1"
+
+				break
+				;;
+		esac
+		shift
+	done
+}
 
 ################################################################################
 #
@@ -304,6 +325,10 @@ fi
 
 # Check for PHP binary option
 fetch_php "$@"
+
+# Check for delimiter
+DELIMITER=""
+get_delimiter "$@"
 
 # Extended Status Message
 MSG_STARTUP=""
@@ -414,9 +439,14 @@ while test -n "$1"; do
 			shift
 			MODULE="$1"
 
-			# Get next arg in list (Exit code)
-			shift
-			SEVERITY="$1"
+			if [ -z "$DELIMITER" ]; then
+				# Get next arg in list (Exit code)
+				shift
+				SEVERITY="$1"
+			else
+				MODULE=$(echo "$1" | awk -F"$DELIMITER" '{print $1}')
+				SEVERITY=$(echo "$1" | awk -F"$DELIMITER" '{print $2}')
+			fi
 
 			# Check valid exit code
 			if [ "$SEVERITY" != "w" ] && [ "$SEVERITY" != "e" ]; then
@@ -454,9 +484,14 @@ while test -n "$1"; do
 			shift
 			MODULE="$1"
 
-			# Get next arg in list (Exit code)
-			shift
-			SEVERITY="$1"
+			if [ -z "$DELIMITER" ]; then
+				# Get next arg in list (Exit code)
+				shift
+				SEVERITY="$1"
+			else
+				MODULE=$(echo "$1" | awk -F"$DELIMITER" '{print $1}')
+				SEVERITY=$(echo "$1" | awk -F"$DELIMITER" '{print $2}')
+			fi
 
 			# Check valid exit code
 			if [ "$SEVERITY" != "w" ] && [ "$SEVERITY" != "e" ]; then
@@ -496,13 +531,19 @@ while test -n "$1"; do
 			shift
 			CONFIG="$1"
 
-			# Get next arg in list (Config value)
-			shift
-			VALUE="$1"
+			if [ -z "$DELIMITER" ]; then
+				# Get next arg in list (Config value)
+				shift
+				VALUE="$1"
 
-			# Get next arg in list (Exit code)
-			shift
-			SEVERITY="$1"
+				# Get next arg in list (Exit code)
+				shift
+				SEVERITY="$1"
+			else
+				CONFIG=$(echo "$1" | awk -F"$DELIMITER" '{print $1}')
+				VALUE=$(echo "$1" | awk -F"$DELIMITER" '{print $2}')
+				SEVERITY=$(echo "$1" | awk -F"$DELIMITER" '{print $3}')
+			fi
 
 			# Check valid exit code
 			if [ "$SEVERITY" != "w" ] && [ "$SEVERITY" != "e" ]; then
@@ -549,6 +590,13 @@ while test -n "$1"; do
 		-p)
 			# The binary option is checked earlier. So just shift
 			# the path and move on.
+			shift
+			;;
+
+		# ---- With delimiter
+		-d)
+			# The delimiter option is checked earlier. So just shift
+			# the delimiter and move on.
 			shift
 			;;
 
