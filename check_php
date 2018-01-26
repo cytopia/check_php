@@ -71,7 +71,7 @@ print_usage() {
 	printf "                         Example: -c \"date.timezone\" w -c \"Europe/Berlin\" e\n\n"
 	printf "  -p <path>              [optional] Define the path to the PHP binary that shall be used.\n"
 	printf "                         If no value is given, the current user's default PHP version will be checked.\n\n"
-	printf "  -d <delimiter>         [optional] Delimiter used to concatenate arguments of the abobe options\n"
+	printf "  -d <delimiter>         [optional] Delimiter used to concatenate arguments of the above options\n"
 	printf "                         that require multiple values.\n"
 	printf "                         Example: -d \"|\" -m \"mysqli|w\" -b \"mcrypt|w\" -c \"date.timezone|Europe/Berlin|e\"\n\n"
 	printf "  -v                     Be verbose (Show PHP Version and Zend Engine Version)\n\n"

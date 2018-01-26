@@ -221,7 +221,7 @@ missing modules, misconfigured directives and available updates.
                          If no value is given, the current user's default PHP version will be checked.
                          Example: -p "/usr/bin/php"
 
-  -d <delimiter>         [optional] Delimiter used to concatenate arguments of the abobe options
+  -d <delimiter>         [optional] Delimiter used to concatenate arguments of the above options
                          that require multiple values.
                          Example: -d "|" -m "mysql|w" -b "mcrypt|w" -c "date.timezone|Europe/Berlin|e"
 
