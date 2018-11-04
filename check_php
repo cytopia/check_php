@@ -1,6 +1,4 @@
 #!/bin/sh
-# TODO:
-# * Config should not be: "value"
 
 
 ################################################################################
@@ -12,8 +10,8 @@ INFO_AUTHOR="cytopia <cytopia@everythingcli.org>"
 INFO_GPGKEY="0x695128A2"
 INFO_LICENSE="MIT"
 INFO_NAME="check_php"
-INFO_DATE="2017-03-28"
-INFO_VERSION="0.7"
+INFO_DATE="2018-11-04"
+INFO_VERSION="0.8"
 
 
 # Check for performance data:
@@ -45,7 +43,7 @@ PHP="$(which php)"
 ############################################################
 
 print_usage() {
-	printf "Usage: %s [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-b <module> <w|e> [-c <conf> <val> <w|e>] [-v]\n" "${INFO_NAME}"
+	printf "Usage: %s [-s <w|e>] [-u <w|e>] [-m <module> <w|e>] [-b <module> <w|e> [-c <conf> <val> <w|e>] [ -p <path> ] [ -d <delimiter> ] [-v]\n" "${INFO_NAME}"
 	printf "       %s -h\n" "${INFO_NAME}"
 	printf "       %s -V\n\n" "${INFO_NAME}"
 	printf "Nagios plugin that will check if PHP exists, for PHP startup errors,\n"
@@ -69,6 +67,11 @@ print_usage() {
 	printf "                         nagios warning/error if the configuration does not match.\n"
 	printf "                         Use multiple times to check against multiple configurations.\n"
 	printf "                         Example: -c \"date.timezone\" w -c \"Europe/Berlin\" e\n\n"
+	printf "  -p <path>              [optional] Define the path to the PHP binary that shall be used.\n"
+	printf "                         If no value is given, the current user's default PHP version will be checked.\n\n"
+	printf "  -d <delimiter>         [optional] Delimiter used to concatenate arguments of the above options\n"
+	printf "                         that require multiple values.\n"
+	printf "                         Example: -d \"|\" -m \"mysqli|w\" -b \"mcrypt|w\" -c \"date.timezone|Europe/Berlin|e\"\n\n"
 	printf "  -v                     Be verbose (Show PHP Version and Zend Engine Version)\n\n"
 	printf "  -h                     Display help\n\n"
 	printf "  -V                     Display version\n"
@@ -79,7 +82,6 @@ print_version() {
 	printf "Author:  %s (%s)\n" "${INFO_AUTHOR}" "${INFO_GPGKEY}"
 	printf "License: %s\n" "${INFO_LICENSE}"
 }
-
 
 merge_text() {
 	CURR_TEXT="$1"
@@ -150,11 +152,11 @@ check_version() {
 
 	# Latest available versions
 	if command -v wget >/dev/null 2>&1; then
-		PHP_LATEST="$(wget -qO- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(wget -qO- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=100" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -t. -n -k1,1 -k2,2 -k3,3 -u -r)"
 	elif command -v curl >/dev/null 2>&1; then
-		PHP_LATEST="$(curl --silent "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(curl --silent "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=100" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -t. -n -k1,1 -k2,2 -k3,3 -u -r)"
 	elif command -v fetch >/dev/null 2>&1; then
-		PHP_LATEST="$(fetch --no-verify-hostname --no-verify-peer --quiet --output=- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=2" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -u)"
+		PHP_LATEST="$(fetch --no-verify-hostname --no-verify-peer --quiet --output=- "https://secure.php.net/releases/index.php?json&version=${PHP_MAJOR}&max=100" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -t. -n -k1,1 -k2,2 -k3,3 -u -r)"
 	else
 		echo "[UNKNOW] - check version requires wget, curl or fetch"
 		exit "$EXIT_UNKNOWN"
@@ -254,6 +256,49 @@ check_blacklisted_module() {
 	fi
 }
 
+# Fetch PHP
+# ---------
+# Checks the given arguments for a '-p' option and sets the PHP
+# variable accordingly.
+fetch_php() {
+	while test -n "$1"; do
+		case "$1" in
+			# PHP binary otion.
+			-p)
+				shift
+				PHP="$1"
+
+				# Whether the given PHP binary doesn't exist.
+				if [ ! -x "$PHP" ]; then
+					echo "PHP binary not found at \"$PHP\" for option \"-p\"."
+					exit $EXIT_UNKNOWN
+				fi
+
+				break
+				;;
+		esac
+		shift
+	done
+}
+
+# Get delimiter
+# -------------
+# Checks the given arguments for a '-d' option and sets the DELIMITER
+# variable accordingly.
+get_delimiter() {
+	while test -n "$1"; do
+		case "$1" in
+			# Delimiter.
+			-d)
+				shift
+				DELIMITER="$1"
+
+				break
+				;;
+		esac
+		shift
+	done
+}
 
 ################################################################################
 #
@@ -276,6 +321,12 @@ elif [ "$1" = "-V" ]; then
 	exit $EXIT_OK
 fi
 
+# Check for PHP binary option
+fetch_php "$@"
+
+# Check for delimiter
+DELIMITER=""
+get_delimiter "$@"
 
 # Extended Status Message
 MSG_STARTUP=""
@@ -343,7 +394,7 @@ while test -n "$1"; do
 			;;
 
 
-		#  ---- 2. Evaluate php update version
+		# ---- 2. Evaluate php update version
 		-u)
 			# Get next arg in list (Exit code)
 			shift
@@ -386,13 +437,18 @@ while test -n "$1"; do
 			shift
 			MODULE="$1"
 
-			# Get next arg in list (Exit code)
-			shift
-			SEVERITY="$1"
+			if [ -z "$DELIMITER" ]; then
+				# Get next arg in list (Exit code)
+				shift
+				SEVERITY="$1"
+			else
+				MODULE=$(echo "$1" | awk -F"$DELIMITER" '{print $1}')
+				SEVERITY=$(echo "$1" | awk -F"$DELIMITER" '{print $2}')
+			fi
 
 			# Check valid exit code
 			if [ "$SEVERITY" != "w" ] && [ "$SEVERITY" != "e" ]; then
-				echo "Invalid value \"$SEVERITY\" for option \"-m\"."
+				echo "Invalid severity value \"$SEVERITY\" for option \"-m\" and module \"$MODULE\"."
 				exit $EXIT_UNKNOWN
 			fi
 
@@ -426,15 +482,21 @@ while test -n "$1"; do
 			shift
 			MODULE="$1"
 
-			# Get next arg in list (Exit code)
-			shift
-			SEVERITY="$1"
+			if [ -z "$DELIMITER" ]; then
+				# Get next arg in list (Exit code)
+				shift
+				SEVERITY="$1"
+			else
+				MODULE=$(echo "$1" | awk -F"$DELIMITER" '{print $1}')
+				SEVERITY=$(echo "$1" | awk -F"$DELIMITER" '{print $2}')
+			fi
 
 			# Check valid exit code
 			if [ "$SEVERITY" != "w" ] && [ "$SEVERITY" != "e" ]; then
-				echo "Invalid value \"$SEVERITY\" for option \"-b\"."
+				echo "Invalid severity \"$SEVERITY\" for option \"-b\" and module \"$MODULE\"."
 				exit $EXIT_UNKNOWN
 			fi
+
 
 			# Execute Command
 			TMP_TEXT="$(check_blacklisted_module "$MODULE")"
@@ -467,17 +529,23 @@ while test -n "$1"; do
 			shift
 			CONFIG="$1"
 
-			# Get next arg in list (Config value)
-			shift
-			VALUE="$1"
+			if [ -z "$DELIMITER" ]; then
+				# Get next arg in list (Config value)
+				shift
+				VALUE="$1"
 
-			# Get next arg in list (Exit code)
-			shift
-			SEVERITY="$1"
+				# Get next arg in list (Exit code)
+				shift
+				SEVERITY="$1"
+			else
+				CONFIG=$(echo "$1" | awk -F"$DELIMITER" '{print $1}')
+				VALUE=$(echo "$1" | awk -F"$DELIMITER" '{print $2}')
+				SEVERITY=$(echo "$1" | awk -F"$DELIMITER" '{print $3}')
+			fi
 
 			# Check valid exit code
 			if [ "$SEVERITY" != "w" ] && [ "$SEVERITY" != "e" ]; then
-				echo "Invalid value \"$SEVERITY\" for option \"-c\"."
+				echo "Invalid severity \"$SEVERITY\" for option \"-c\" and directive \"$CONFIG\"."
 				exit $EXIT_UNKNOWN
 			fi
 
@@ -505,7 +573,7 @@ while test -n "$1"; do
 			CNT_ALL=$((CNT_ALL+1))
 			;;
 
-		# ---- Be versbose
+		# ---- Be verbose
 		-v)
 			CMD="$PHP -v 2>/dev/null | grep -E '(^PHP)|(^Zend)' | awk -F'[,]' '{print \$1}' | awk -F'[(]' '{print \$1}' | awk -F'[-]' '{print \$1}'"
 			MSG_VERBOSE="$(eval "$CMD")"
@@ -515,6 +583,21 @@ while test -n "$1"; do
 			print_version
 			exit $EXIT_OK
 			;;
+
+		# ---- PHP binary
+		-p)
+			# The binary option is checked earlier. So just shift
+			# the path and move on.
+			shift
+			;;
+
+		# ---- With delimiter
+		-d)
+			# The delimiter option is checked earlier. So just shift
+			# the delimiter and move on.
+			shift
+			;;
+
 		*)
 			printf "Unknown argument: %s\n" "$1"
 			print_usage
@@ -572,4 +655,3 @@ if [ "$MSG_CONFIG"      != "" ]; then echo "$MSG_CONFIG";      fi
 if [ "$MSG_VERBOSE"     != "" ]; then echo "$MSG_VERBOSE";     fi
 
 exit "$NAGIOS_EXIT"
-
