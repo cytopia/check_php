@@ -1,6 +1,4 @@
 #!/bin/sh
-# TODO:
-# * Config should not be: "value"
 
 
 ################################################################################
@@ -396,7 +394,7 @@ while test -n "$1"; do
 			;;
 
 
-		#  ---- 2. Evaluate php update version
+		# ---- 2. Evaluate php update version
 		-u)
 			# Get next arg in list (Exit code)
 			shift
@@ -657,4 +655,3 @@ if [ "$MSG_CONFIG"      != "" ]; then echo "$MSG_CONFIG";      fi
 if [ "$MSG_VERBOSE"     != "" ]; then echo "$MSG_VERBOSE";     fi
 
 exit "$NAGIOS_EXIT"
-
